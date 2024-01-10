@@ -161,7 +161,7 @@ if __name__ == "__main__":
     _default_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     FEATURE_NAME = 'layer_features'
     model = models.alexnet()
-    model.load_state_dict(torch.load('../results/model1_orig.checkpoint.pth.tar'))
+    model.load_state_dict(torch.load('checkpoint.pth.tar'))
     activations_dict = {}
     get_attack_activations = get_attack_activations_function('channel')
     # Define the function for the hook.
