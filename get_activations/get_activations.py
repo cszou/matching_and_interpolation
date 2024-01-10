@@ -147,6 +147,16 @@ class ImageNetWithIndices(datasets.ImageNet):
         return img, label, index
 
 
+def register_hooks(model_layers, features, optim_layer):
+    def get_features(name):
+        def hook(model, input, output):
+            features[name] = output  # .detach()
+
+        return hook
+
+    model_layers[optim_layer[0]].register_forward_hook(get_features(FEATURE_NAME))
+
+
 if __name__ == "__main__":
     _default_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     FEATURE_NAME = 'layer_features'
@@ -154,6 +164,11 @@ if __name__ == "__main__":
     model.load_state_dict(torch.load('../results/model1_orig.checkpoint.pth.tar'))
     activations_dict = {}
     get_attack_activations = get_attack_activations_function('channel')
+    # Define the function for the hook.
+    model_layers = get_model_layers(model)
+    # print(model_layers, feature_layer, channels)
+
+    register_hooks(model_layers, activations_dict, feature_layer)
     get_topk_image_indices_by_channel(model=model, activations_dict=activations_dict, k=10, get_attack_activations=get_attack_activations, imagenet_folder='/data/imagenet_data/train',
                                       data_loader=None)
 
