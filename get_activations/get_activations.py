@@ -54,6 +54,7 @@ if __name__=='__main__':
     k = 1
     torch.manual_seed(42)
     activations = {}
+    activations_norms = {}
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     model = models.alexnet()
     model.load_state_dict(torch.load('./checkpoint.pth.tar')['state_dict'])
@@ -81,7 +82,9 @@ if __name__=='__main__':
             data = data.to(device)
             batch_indices = batch_indices.to(device)
             model(data)
-            activations_norms = torch.linalg.matrix_norm(activations)
+            for key, v in activations.items():
+                activations_norms = torch.linalg.matrix_norm(v)
+                break
             if i == 0:
                 top_norm, top_dataset_indices = torch.topk(activations_norms, k)
             else:
