@@ -95,7 +95,7 @@ if __name__=='__main__':
 
                 # gather the dataset indices from the indices stack
                 top_dataset_indices = torch.gather(indices_stack, 0, top_indices)
-            break
+                break
     print('Top images found!')
     print('Top image activation norms:\n', top_norms.shape)
     print('Top indices shape :\n', top_dataset_indices.shape)
