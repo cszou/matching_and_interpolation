@@ -72,6 +72,7 @@ if __name__=='__main__':
             for key, v in activations.items():
                 print(f'v: {v.shape}')
                 activations_norms = torch.linalg.matrix_norm(v)
+                print(f'activations_norms: {activations_norms.shape}')
                 break
             if i == 0:
                 top_norms, top_dataset_indices = torch.topk(activations_norms, k)
