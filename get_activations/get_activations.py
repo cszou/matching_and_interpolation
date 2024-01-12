@@ -70,6 +70,7 @@ if __name__=='__main__':
             batch_indices = batch_indices.to(device)
             model(data)
             for key, v in activations.items():
+                print(f'v: {v.shape}')
                 activations_norms = torch.linalg.matrix_norm(v)
                 break
             if i == 0:
