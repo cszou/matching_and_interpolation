@@ -93,8 +93,8 @@ if __name__=='__main__':
                 top_norms, top_indices = torch.topk(norms_stack, k=k, dim=-1)
 
 
-            # gather the dataset indices from the indices stack
-            top_dataset_indices = torch.gather(indices_stack, 0, top_indices)
+                # gather the dataset indices from the indices stack
+                top_dataset_indices = torch.gather(indices_stack, 0, top_indices)
             break
     print('Top images found!')
     print('Top image activation norms:\n', top_norms.shape)
