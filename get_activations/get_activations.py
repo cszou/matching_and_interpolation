@@ -75,12 +75,12 @@ if __name__=='__main__':
                 print(f'activations_norms: {activations_norms.shape}')
                 break
             if i == 0:
-                top_norms, top_dataset_indices = torch.topk(activations_norms, k)
+                top_norms, top_dataset_indices = torch.topk(activations_norms, k, dim=0)
                 print(top_norms.shape)
             else:
 
                 # For the current batch, get the top norms and their indices
-                batch_top_norms, batch_top_indices = torch.topk(activations_norms, k=k)
+                batch_top_norms, batch_top_indices = torch.topk(activations_norms, k=k, dim=0)
                 # Get the dataset indices corresponding to the batch_indices
                 batch_top_dataset_indices = batch_indices[batch_top_indices].to(device)
 
@@ -90,7 +90,7 @@ if __name__=='__main__':
                 indices_stack = torch.cat((top_dataset_indices, batch_top_dataset_indices))
 
                 # get the indices and values of the max norms
-                top_norms, top_indices = torch.topk(norms_stack, k=k, dim=-1)
+                top_norms, top_indices = torch.topk(norms_stack, k=k, dim=0)
 
 
                 # gather the dataset indices from the indices stack
