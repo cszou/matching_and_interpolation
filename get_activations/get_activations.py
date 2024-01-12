@@ -77,7 +77,6 @@ if __name__=='__main__':
             if i == 0:
                 top_norms, top_dataset_indices = torch.topk(activations_norms, k)
                 # print(top_norms.shape)
-                # break
             else:
 
                 # For the current batch, get the top norms and their indices
@@ -94,9 +93,12 @@ if __name__=='__main__':
                 top_norms, top_indices = torch.topk(norms_stack, k=k, dim=-1)
 
 
-                # gather the dataset indices from the indices stack
-                top_dataset_indices = torch.gather(indices_stack, 0, top_indices)
+            # gather the dataset indices from the indices stack
+            top_dataset_indices = torch.gather(indices_stack, 0, top_indices)
+            break
     print('Top images found!')
     print('Top image activation norms:\n', top_norms.shape)
     print('Top indices shape :\n', top_dataset_indices.shape)
+    torch.save({'top_norms': top_norms,
+                'top_dataset_indices': top_dataset_indices}, 'result.pth.tar')
 
