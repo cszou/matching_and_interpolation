@@ -72,11 +72,11 @@ if __name__=='__main__':
             for key, v in activations.items():
                 # print(f'v: {v.shape}')
                 activations_norms = torch.linalg.matrix_norm(v)
-                # print(f'activations_norms: {activations_norms.shape}')
+                print(f'activations_norms: {activations_norms.shape}')
                 break
             if i == 0:
                 top_norms, top_dataset_indices = torch.topk(activations_norms, k)
-                # print(top_norms.shape)
+                print(top_norms.shape)
             else:
 
                 # For the current batch, get the top norms and their indices
