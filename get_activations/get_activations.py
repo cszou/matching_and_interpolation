@@ -75,7 +75,7 @@ if __name__=='__main__':
                 print(f'activations_norms: {activations_norms.shape}')
                 break
             if i == 0:
-                top_norms, top_dataset_indices = torch.topk(activations_norms, k, dim=0)
+                topnorms, top_dataset_indices = torch.topk(activations_norms, k, dim=0)
                 print(top_norms.shape)
             else:
 
