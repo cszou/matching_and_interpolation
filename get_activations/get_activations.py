@@ -51,7 +51,7 @@ class ImageNetWithIndices(datasets.ImageNet):
 
 
 if __name__=='__main__':
-    k = 1
+    k = 5
     torch.manual_seed(42)
     activations = {}
     activations_norms = {}
@@ -61,19 +61,6 @@ if __name__=='__main__':
     model.to(device)
     model.eval()
     data_loader = get_topk_dataset_loader()
-    # print(model)
-    # print(get_model_layers(model))
-    # for i in range(2):
-    #     for name, layer in get_model_layers(model).items():
-    #         if isinstance(layer, nn.Conv2d):
-    #             layer.register_forward_hook(get_activation(name))
-    #     # print(activation.keys())
-    #     x = torch.randn(32, 3, 224, 224).to(device)
-    #     output = model(x)
-    #     for v in activation.values():
-    #         print(torch.topk(torch.linalg.matrix_norm(v),k, -1)[1][0])
-    #     print()
-    # get top k images
     with torch.no_grad():
         for i, (data, _, batch_indices) in enumerate(tqdm(data_loader)):
             for name, layer in get_model_layers(model).items():
@@ -86,7 +73,9 @@ if __name__=='__main__':
                 activations_norms = torch.linalg.matrix_norm(v)
                 break
             if i == 0:
-                top_norm, top_dataset_indices = torch.topk(activations_norms, k)
+                top_norms, top_dataset_indices = torch.topk(activations_norms, k)
+                print(top_norms.shape)
+                break
             else:
 
                 # For the current batch, get the top norms and their indices
