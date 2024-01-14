@@ -74,20 +74,19 @@ if __name__=='__main__':
             for key, v in activations.items():
                 # print(f'v: {v.shape}')
                 activations_norms = torch.linalg.matrix_norm(v)
-                print(f'activations_norms: {activations_norms.shape}')
+                # print(f'activations_norms: {activations_norms.shape}')
                 if i == 0:
                     norms, dataset_indices = torch.topk(activations_norms, k, dim=0)
-                    print(norms.shape)
+                    # print(norms.shape)
                 else:
                     # For the current batch, get the top norms and their indices
                     batch_norms, batch_indices = torch.topk(activations_norms, k=k, dim=0)
                     # Get the dataset indices corresponding to the batch_indices
                     batch_dataset_indices = batch_indices[batch_indices].to(device)
 
-
                     # Need to stack the indices and norms we already have together, then sort and update the top ones
-                    norms_stack = torch.cat((norms, batch_norms))  # .detach()
-                    indices_stack = torch.cat((dataset_indices, batch_dataset_indices))
+                    norms_stack = torch.cat((top_norms[key], batch_norms))  # .detach()
+                    indices_stack = torch.cat((top_dataset_indices[key], batch_dataset_indices))
 
                     # get the indices and values of the max norms
                     norms, indices = torch.topk(norms_stack, k=k, dim=0)
