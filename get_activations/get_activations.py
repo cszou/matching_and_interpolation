@@ -77,7 +77,7 @@ if __name__=='__main__':
                 print(f'activations_norms: {activations_norms.shape}')
                 if i == 0:
                     norms, dataset_indices = torch.topk(activations_norms, k, dim=0)
-                    print(top_norms.shape)
+                    print(norms.shape)
                 else:
                     # For the current batch, get the top norms and their indices
                     batch_norms, batch_indices = torch.topk(activations_norms, k=k, dim=0)
