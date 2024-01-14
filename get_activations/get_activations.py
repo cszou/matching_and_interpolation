@@ -83,12 +83,12 @@ if __name__=='__main__':
                     batch_norms, b_indices = torch.topk(activations_norms, k=k, dim=0)
                     # Get the dataset indices corresponding to the batch_indices
                     batch_dataset_indices = batch_indices[b_indices].to(device)
-                    print(key)
-                    print(batch_norms.shape)
-                    print(batch_indices.shape)
-                    print(batch_dataset_indices.shape)
-                    print(top_norms[key].shape)
-                    print(top_dataset_indices[key].shape)
+                    # print(key)
+                    # print(batch_norms.shape)
+                    # print(batch_indices.shape)
+                    # print(batch_dataset_indices.shape)
+                    # print(top_norms[key].shape)
+                    # print(top_dataset_indices[key].shape)
 
                     # Need to stack the indices and norms we already have together, then sort and update the top ones
                     norms_stack = torch.cat((top_norms[key], batch_norms))  # .detach()
