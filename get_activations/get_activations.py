@@ -80,9 +80,9 @@ if __name__=='__main__':
                     # print(norms.shape)
                 else:
                     # For the current batch, get the top norms and their indices
-                    batch_norms, batch_indices = torch.topk(activations_norms, k=k, dim=0)
+                    batch_norms, b_indices = torch.topk(activations_norms, k=k, dim=0)
                     # Get the dataset indices corresponding to the batch_indices
-                    batch_dataset_indices = batch_indices[batch_indices].to(device)
+                    batch_dataset_indices = batch_indices[b_indices].to(device)
                     print(key)
                     print(batch_norms.shape)
                     print(batch_indices.shape)
