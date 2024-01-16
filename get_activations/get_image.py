@@ -24,7 +24,7 @@ for k,v in top_indices.items():
     for top_channel_indices in v.transpose(0,1):
         top_images = list()
         for index in top_channel_indices:
-            top_images.append = imagenet_data[index][0]
+            top_images.append(imagenet_data[index][0])
         images[k][f'channel_{channel}'] = top_images
         channel += 1
 
