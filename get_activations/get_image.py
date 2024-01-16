@@ -27,7 +27,5 @@ for k,v in top_indices.items():
             top_images.append = imagenet_data[index][0]
         images[k][f'channel_{channel}'] = top_images
         channel += 1
-for k in images.keys():
-    print(f'{k}:', end=' ')
-    for c, v in images[k].keys():
-        print(f'{c}: {v.shape}')
+
+torch.save(images, 'top_images')
