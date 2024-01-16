@@ -19,4 +19,10 @@ imagenet_data = ImageNetWithIndices('/data/imagenet_data', split="train", transf
 images = {}
 for k,v in top_indices.items():
     images[k] = v.transpose(0,1)
-print(images)
+    for top_images in images[k]:
+        for image in top_images:
+            print(image.shape)
+            image = imagenet_data[image]
+            print(image.shape)
+        break
+    break
