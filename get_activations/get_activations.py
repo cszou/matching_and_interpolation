@@ -52,14 +52,15 @@ class ImageNetWithIndices(datasets.ImageNet):
 
 if __name__=='__main__':
     k = 10
-    torch.manual_seed(42)
-    activations = {}
-    activations_norms = {}
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     model = models.alexnet()
     model_names = {'m1', 'm2'}
-    for name in model_names:
-        model.load_state_dict(torch.load(name + '.checkpoint.pth.tar')['state_dict'])
+    # torch.manual_seed(42)
+    for model_name in model_names:
+        print(f'Finding top images for {model_name}:')
+        activations = {}
+        activations_norms = {}
+        model.load_state_dict(torch.load(model_name + '.checkpoint.pth.tar')['state_dict'])
         model.to(device)
         model.eval()
         top_norms = {}
@@ -104,11 +105,11 @@ if __name__=='__main__':
                         dataset_indices = torch.gather(indices_stack, 0, indices)
                     top_norms[key] = norms
                     top_dataset_indices[key] = dataset_indices
-        print(f'Top images for {name} found!')
+        print(f'Top images for {model_name} found!')
         for key, value in top_norms.items():
             print('Layer: ', key)
             print('\tTop image activation norms: ', top_norms[key].shape)
             print('\tTop indices shape : ', top_dataset_indices[key].shape)
         torch.save({'top_norms': top_norms,
-                    'top_dataset_indices': top_dataset_indices}, name+'.result.pth.tar')
+                    'top_dataset_indices': top_dataset_indices}, model_name+'.result.pth.tar')
 
