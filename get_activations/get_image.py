@@ -16,5 +16,7 @@ standard_test_transform = transforms.Compose(
         [transforms.Resize(256), transforms.CenterCrop(224), transforms.ToTensor()]
     )
 imagenet_data = ImageNetWithIndices('/data/imagenet_data', split="train", transform=standard_test_transform)
+i = 0
 for v in top_indices.values():
-    print(imagenet_data[v.transpose(0,1)[0][0]])
+    torch.save(imagenet_data[v.transpose(0,1)[0][0]], f'pic_{i}')
+    i += 1
