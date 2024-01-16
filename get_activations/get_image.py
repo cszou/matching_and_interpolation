@@ -17,6 +17,6 @@ standard_test_transform = transforms.Compose(
     )
 imagenet_data = ImageNetWithIndices('/data/imagenet_data', split="train", transform=standard_test_transform)
 images = {}
-for k,v in top_indices.values():
+for k,v in top_indices.items():
     images[k] = v.transpose(0,1)
 print(images)
