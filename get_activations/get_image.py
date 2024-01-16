@@ -17,15 +17,14 @@ standard_test_transform = transforms.Compose(
         [transforms.Resize(256), transforms.CenterCrop(224), transforms.ToTensor()]
     )
 imagenet_data = ImageNetWithIndices('/data/imagenet_data', split="train", transform=standard_test_transform)
-images = {}
 for k,v in top_indices.items():
-    images[k] = {}
+    images = {}
     channel = 0
     for top_channel_indices in v.transpose(0,1):
         top_images = list()
         for index in top_channel_indices:
             top_images.append(imagenet_data[index][0])
-        images[k][f'channel_{channel}'] = top_images
+        images[f'channel_{channel}'] = top_images
         channel += 1
-
-torch.save(images, 'top_images')
+    torch.save(images, f'top_images_{k}')
+    print(f'layer_{k} done!')
