@@ -21,8 +21,5 @@ for k,v in top_indices.items():
     images[k] = v.transpose(0,1)
     for top_images in images[k]:
         for image in top_images:
-            print(image.shape)
-            image = imagenet_data[image]
-            print(image.shape)
-        break
-    break
+            image = imagenet_data[image][0]
+print(images)
