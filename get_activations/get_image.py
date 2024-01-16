@@ -18,8 +18,15 @@ standard_test_transform = transforms.Compose(
 imagenet_data = ImageNetWithIndices('/data/imagenet_data', split="train", transform=standard_test_transform)
 images = {}
 for k,v in top_indices.items():
-    images[k] = v.transpose(0,1)
-    for top_images in images[k]:
-        for image in top_images:
-            image = imagenet_data[image][0]
-print(images)
+    images[k] = {}
+    channel = 0
+    for top_channel_indices in v:
+        top_images = {}
+        for index in top_indices:
+            top_images.append = imagenet_data[index][0]
+        images[k][f'channel_{channel}'] = top_images
+        channel += 1
+for k in images.keys():
+    print(f'{k}:', end=' ')
+    for c, v in images[k].keys:
+        print(f'{c}: {v.shape}')
