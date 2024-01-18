@@ -32,7 +32,8 @@ for k,v in top_indices.items():
         for i in range(10):
             plt.subplot(2, 5, i+1)
             plt.axis('off')
-            plt.imshow(top_channel_indices[i].permute(1,2,0))
+            idx = top_channel_indices[i]
+            plt.imshow(imagenet_data[idx][0].permute(1,2,0))
         plt.subplots_adjust(wspace=0, hspace=0)
         plt.savefig(f'./results/{k}/channel_{channel}.png')
         plt.close()
