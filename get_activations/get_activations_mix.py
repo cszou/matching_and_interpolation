@@ -17,9 +17,7 @@ def get_model_layers(model):
             else:
                 layers["_".join(prefix+[name])] = layer
     get_layers(model)
-    return ls
-
-    vimlayers
+    return layers
 
 
 def get_activation(name, activations):
