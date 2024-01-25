@@ -67,7 +67,7 @@ if __name__=='__main__':
     mixedModel = OrderedDict()
     # vanillaMatchedModel = OrderedDict()
     for key in m1p['state_dict'].keys():
-        mixedModel[key] = 0.5 * m1p['state_dict'][k] + 0.5 * m2p['state_dict'][k]
+        mixedModel[key] = 0.5 * m1p['state_dict'][key] + 0.5 * m2p['state_dict'][key]
         # vanillaMatchedModel[k] = a * 0.05 * m1['state_dict'][k] + (1-a*0.05) * m2o['state_dict'][k].to('cuda')
 
     model.load_state_dict(mixedModel)
