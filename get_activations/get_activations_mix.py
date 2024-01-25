@@ -60,14 +60,16 @@ if __name__=='__main__':
     model = models.alexnet()
     model_name = 'mixed_model'
     # torch.manual_seed(42)
-    m1 = models.alexnet()
-    m2 = models.alexnet()
-    m1.load_state_dict(torch.load('m1.checkpoint.pth.tar')['state_dict'])
-    m2.load_state_dict(torch.load('m2.checkpoint.pth.tar')['state_dict'])
+    # m1 = models.alexnet()
+    # m2 = models.alexnet()
+    m1p = torch.load('m1.checkpoint.pth.tar')
+    m2p = torch.load('m2.checkpoint.pth.tar')
+    # m1.load_state_dict(m1p['state_dict'])
+    # m2.load_state_dict(m2p['state_dict'])
     mixedModel = OrderedDict()
     # vanillaMatchedModel = OrderedDict()
-    for k in m1['state_dict'].keys():
-        mixedModel[k] = 0.5 * m1['state_dict'][k] + 0.5 * m2['state_dict'][k]
+    for k in m1p['state_dict'].keys():
+        mixedModel[k] = 0.5 * m1p['state_dict'][k] + 0.5 * m2p['state_dict'][k]
         # vanillaMatchedModel[k] = a * 0.05 * m1['state_dict'][k] + (1-a*0.05) * m2o['state_dict'][k].to('cuda')
 
     model.load_state_dict(mixedModel)
