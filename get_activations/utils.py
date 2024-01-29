@@ -81,7 +81,7 @@ def get_images_from_indices2(indices, num_top_images_per_channel, data_loader=No
     all_images = []
     for nth_place in range(num_top_images_per_channel):
         images = []
-        print(f'nth_place: {nth_place}')
+        # print(f'nth_place: {nth_place}')
         for index in indices[nth_place]:
             # print(f'index: {index}')
             image = grab_image(index)
