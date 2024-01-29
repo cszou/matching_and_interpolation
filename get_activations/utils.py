@@ -60,35 +60,6 @@ def get_images_from_indices(top_indices, dataset):
         images.append(image)
     return torch.stack(images)
 
-def get_images_from_indices2(indices, num_top_images_per_channel, data_loader=None):
-    # Get the dataset object associated with the dataloader
-    if data_loader is None:
-        dataset = get_topk_dataset_loader().dataset
-    else:
-        dataset = data_loader.dataset
-        # print(indices.shape)
-
-    def grab_image(idx):
-        return dataset[idx][0]
-
-    all_images = []
-    for nth_place in range(num_top_images_per_channel):
-        images = []
-        # print(f'nth_place: {nth_place}')
-        for index in indices[nth_place]:
-            # print(f'index: {index}')
-            image = grab_image(index)
-            # print('image shape:\n', image.shape)
-            images.append(image)
-        images_tensor = torch.stack(images)
-        all_images.append(images_tensor)
-    top_image_tensor = torch.stack(all_images)
-    # images = [grab_image(index) for index in indices[0]]
-    # print('images from the indices look like:\n', len(images))
-
-    # print('images from the indices look like:\n', top_image_tensor.shape)
-    return top_image_tensor
-
 
 class ImageNetWithIndices(datasets.ImageNet):
     # This makes the dataloader return the dataset indices along with the standard img,label
