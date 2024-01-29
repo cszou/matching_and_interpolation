@@ -2,9 +2,8 @@ import clip
 from tqdm import tqdm
 from utils import *
 
-def get_clip_encodings_from_index_vector(indices,  dataloader, model, clip_device):
-    #print(f'indices for clip image have shape: {indices.shape}')
-
+def get_clip_encodings_from_index_vector(indices, dataloader, model, clip_device):
+    print(indices)
     top_images = get_images_from_indices(indices, dataloader.dataset).squeeze() #Need to squeeze for the model
 
     with torch.no_grad():
@@ -21,6 +20,7 @@ def get_clip_encodings_from_index_tensor(indices, topk=10,  batch_size = 256, nu
     dataloader = get_clip_encoding_dataloader(preprocess, batch_size, num_workers)
     print('grabbing embeddings of top images for all channels')
     all_embeddings = []
+    print(indices.shape)
     for index_of_top_kth_images in tqdm(range(topk)):
         top_kth_embedding = get_clip_encodings_from_index_vector(indices[index_of_top_kth_images].unsqueeze(0), dataloader, model, clip_device)
         all_embeddings.append(top_kth_embedding.unsqueeze(0))
@@ -37,6 +37,6 @@ if __name__ == '__main__':
     for k, v in indices_m1.items():
         print(k, v.shape)
     # indices_m2 = torch.load('m2.result.pth.tar')['top_dataset_indices']
-        embeddings_m1 = get_clip_encodings_from_index_tensor(indices_m1)
+        embeddings_m1 = get_clip_encodings_from_index_tensor(v)
         print(embeddings_m1.shape)
     # embeddings_m2 = get_clip_encodings_from_index_tensor(indices_m2)
