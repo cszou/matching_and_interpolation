@@ -1,5 +1,6 @@
 import clip
 from tqdm import tqdm
+import torch.nn.functional as F
 from utils import *
 
 def get_clip_encodings_from_index_vector(indices, dataloader, model, clip_device):
@@ -32,13 +33,36 @@ def get_clip_encodings_from_index_tensor(indices, topk=10,  batch_size = 256, nu
     return embeddings_tensor
 
 
+def gen_cosine_sim_tensor(embeddings1, embeddings2):
+    print('embeddings passed to cos sim: ', embeddings1.shape)
+    embeddings1 = embeddings1.permute(1, 0, 2)  ## [channels, topk, embedding]
+    embeddings2 = embeddings2.permute(1, 0, 2)
+    print('embeddings shape: ', embeddings1.shape)
+    #normalize the embeddings for easier similarity calculations
+    embeddings1 = F.normalize(embeddings1, dim=-1)
+    embeddings2 = F.normalize(embeddings2, dim=-1)
+    embeddings1 = embeddings1.unsqueeze(1)
+    embeddings2 = embeddings2.unsqueeze(0).permute(0,1,3,2)
+    print('embeddings1 shape: ', embeddings1.shape)
+    print('embeddings2 shape: ', embeddings2.shape)
+    similarities =  torch.matmul(embeddings1, embeddings2)
+    #Generate a [channels, channels,topk,topk] tensor with the cosine similarity
+    print(f'similarites shape: {similarities.shape}')
+
+    return similarities
+
+
 if __name__ == '__main__':
     indices_m1 = torch.load('m1.result.pth.tar')['top_dataset_indices']
     indices_m2 = torch.load('m2.result.pth.tar')['top_dataset_indices']
     # print(indices_m1)
     embeddings_m1 = {}
     embeddings_m2 = {}
+    similarities = {}
     for k in indices_m1.keys():
         # print(k, v.shape)
         embeddings_m1[k] = get_clip_encodings_from_index_tensor(indices_m1[k])
         embeddings_m2[k] = get_clip_encodings_from_index_tensor(indices_m2[k])
+        print(gen_cosine_sim_tensor(embeddings_m1[k], embeddings_m1[k]))
+        similarities[k] = gen_cosine_sim_tensor(embeddings_m1[k], embeddings_m2[k])
+        break
