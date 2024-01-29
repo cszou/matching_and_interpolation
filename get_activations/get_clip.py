@@ -39,4 +39,5 @@ if __name__ == '__main__':
     # indices_m2 = torch.load('m2.result.pth.tar')['top_dataset_indices']
         embeddings_m1 = get_clip_encodings_from_index_tensor(v)
         print(embeddings_m1.shape)
+        print(embeddings_m1[0, 0, 0])
     # embeddings_m2 = get_clip_encodings_from_index_tensor(indices_m2)
