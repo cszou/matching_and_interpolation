@@ -53,7 +53,7 @@ def gen_cosine_sim_tensor(embeddings1, embeddings2):
 
 
 def get_cos(embed1, embed2):
-    cos = torch.nn.CosineSimilarity()
+    cos = torch.nn.CosineSimilarity(dim=-1)
     return cos(embed1, embed1)
 
 
