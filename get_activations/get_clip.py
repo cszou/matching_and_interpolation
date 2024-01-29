@@ -52,7 +52,7 @@ def gen_cosine_sim_tensor(embeddings1, embeddings2):
     return similarities
 
 
-if __name__ == '__main__':
+def main():
     indices_m1 = torch.load('m1.result.pth.tar')['top_dataset_indices']
     indices_m2 = torch.load('m2.result.pth.tar')['top_dataset_indices']
     # print(indices_m1)
@@ -66,3 +66,8 @@ if __name__ == '__main__':
         print(gen_cosine_sim_tensor(embeddings_m1[k], embeddings_m1[k]))
         similarities[k] = gen_cosine_sim_tensor(embeddings_m1[k], embeddings_m2[k])
         break
+    return similarities
+
+
+if __name__ == '__main__':
+    main()
