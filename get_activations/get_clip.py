@@ -35,10 +35,8 @@ def get_clip_encodings_from_index_tensor(indices, topk=10,  batch_size = 256, nu
 
 def gen_cosine_sim_tensor(embeddings1, embeddings2):
     print('embeddings passed to cos sim: ', embeddings1.shape)
-    print(embeddings1.transpose(0,1))
     embeddings1 = embeddings1.permute(1, 0, 2)  ## [channels, topk, embedding]
     embeddings2 = embeddings2.permute(1, 0, 2)
-    print(embeddings1)
     print('embeddings shape: ', embeddings1.shape)
     #normalize the embeddings for easier similarity calculations
     embeddings1 = F.normalize(embeddings1, dim=-1)
@@ -46,7 +44,7 @@ def gen_cosine_sim_tensor(embeddings1, embeddings2):
     # embeddings1 = embeddings1.unsqueeze(1)
     # embeddings2 = embeddings2.unsqueeze(0).permute(0,1,3,2)
     print('embeddings1 shape: ', embeddings1.shape)
-    print('embeddings2 shape: ', embeddings2.shape)
+    print('embeddings2 shape: ', embeddings2.permute(0,2,1).shape)
     similarities =  torch.matmul(embeddings1, embeddings2.permute(0,2,1))
     #Generate a [channels, channels,topk,topk] tensor with the cosine similarity
     print(f'similarites shape: {similarities.shape}')
