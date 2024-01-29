@@ -21,12 +21,14 @@ def get_clip_encodings_from_index_tensor(indices, topk=10,  batch_size = 256, nu
     print('grabbing embeddings of top images for all channels')
     all_embeddings = []
     print(indices.shape)
-    for index_of_top_kth_images in tqdm(range(topk)):
-        top_kth_embedding = get_clip_encodings_from_index_vector(indices[index_of_top_kth_images].unsqueeze(0), dataloader, model, clip_device)
-        all_embeddings.append(top_kth_embedding.unsqueeze(0))
-        break
-
-    embeddings_tensor = torch.vstack(all_embeddings)
+    top_kth_embedding = get_clip_encodings_from_index_vector(indices, dataloader, model, clip_device)
+    # for index_of_top_kth_images in tqdm(range(topk)):
+    #     top_kth_embedding = get_clip_encodings_from_index_vector(indices[index_of_top_kth_images].unsqueeze(0), dataloader, model, clip_device)
+    #     all_embeddings.append(top_kth_embedding.unsqueeze(0))
+    #     break
+    #
+    # embeddings_tensor = torch.vstack(all_embeddings)
+    embeddings_tensor = top_kth_embedding
     print(f'overall embeddings shape: {embeddings_tensor.shape}')
 
     return embeddings_tensor
