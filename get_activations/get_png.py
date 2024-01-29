@@ -2,16 +2,7 @@ import os
 import matplotlib.pyplot as plt
 import torch
 from torchvision import datasets, transforms
-
-
-class ImageNetWithIndices(datasets.ImageNet):
-    # This makes the dataloader return the dataset indices along with the standard img,label
-    # means you can retrieve the original image using data_loader.dataset[index][0]
-    # dataset[index] grabs the img,label,index tuple.
-    def __getitem__(self, index):
-        img, label = super(ImageNetWithIndices, self).__getitem__(index)
-        return img, label, index
-
+from utils import *
 
 top_indices = torch.load('m1.result.pth.tar')['top_dataset_indices']
 standard_test_transform = transforms.Compose(
