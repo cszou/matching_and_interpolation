@@ -57,7 +57,7 @@ def get_images_from_indices(top_indices, dataset):
     images = []
     for index in top_indices[0]:
         image = dataset[index][0]
-        images.append(images)
+        images.append(image)
     return torch.stack(images)
 
 def get_images_from_indices2(indices, num_top_images_per_channel, data_loader=None):
