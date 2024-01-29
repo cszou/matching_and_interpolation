@@ -53,18 +53,32 @@ def get_clip_encoding_dataloader(preprocess, batch_size=256, num_workers=10, ima
     return data_loader
 
 
-def get_images_from_indices(top_indices, dataset):
-    for k, v in top_indices.items():
-        images = {}
-        channel = 0
-        for top_channel_indices in v.transpose(0, 1):
-            top_images = list()
-            for index in top_channel_indices:
-                top_images.append(dataset[index][0])
-            images[f'channel_{channel}'] = top_images
-            channel += 1
-        torch.save(images, f'top_images_{k}')
-        print(f'layer_{k} done!')
+def get_images_from_indices(indices, num_top_images_per_channel, data_loader=None):
+    # Get the dataset object associated with the dataloader
+    if data_loader is None:
+        dataset = get_topk_dataset_loader().dataset
+    else:
+        dataset = data_loader.dataset
+        # print(indices.shape)
+
+    def grab_image(idx):
+        return dataset[idx][0]
+
+    all_images = []
+    for nth_place in range(num_top_images_per_channel):
+        images = []
+        for index in indices[nth_place]:
+            image = grab_image(index)
+            # print('image shape:\n', image.shape)
+            images.append(image)
+        images_tensor = torch.stack(images)
+        all_images.append(images_tensor)
+    top_image_tensor = torch.stack(all_images)
+    # images = [grab_image(index) for index in indices[0]]
+    # print('images from the indices look like:\n', len(images))
+
+    # print('images from the indices look like:\n', top_image_tensor.shape)
+    return top_image_tensor
 
 
 class ImageNetWithIndices(datasets.ImageNet):
