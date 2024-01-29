@@ -3,3 +3,5 @@
 /weight_matching/skdata.py
 /weight_matching/perm.py
 /results/
+/references/
+/get_activations/results/
