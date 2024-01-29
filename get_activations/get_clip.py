@@ -4,8 +4,11 @@ from utils import *
 
 def get_clip_encodings_from_index_vector(indices, dataloader, model, clip_device):
     # print(f'shape of indices {indices.shape}')
-    top_images = get_images_from_indices2(indices, 1, dataloader).squeeze() #Need to squeeze for the model
+    top_images = get_images_from_indices(indices, dataloader).squeeze() #Need to squeeze for the model
+    top_images2 = get_images_from_indices2(indices, 1, dataloader).squeeze() #Need to squeeze for the model
     # print(f'top_images shape: {top_images.shape}')
+    print(top_images2.shape)
+    print(top_images.shape)
     with torch.no_grad():
         image_features = model.encode_image(top_images.to(clip_device))
 
