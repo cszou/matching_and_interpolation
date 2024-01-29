@@ -34,9 +34,11 @@ def get_clip_encodings_from_index_tensor(indices, topk=10,  batch_size = 256, nu
 if __name__ == '__main__':
     indices_m1 = torch.load('m1.result.pth.tar')['top_dataset_indices']
     # print(indices_m1)
+    embeddings_m1 = {}
     for k, v in indices_m1.items():
         print(k, v.shape)
     # indices_m2 = torch.load('m2.result.pth.tar')['top_dataset_indices']
-        embeddings_m1 = get_clip_encodings_from_index_tensor(indices_m1)
-        print(embeddings_m1.shape)
+        embeddings_m1[k] = get_clip_encodings_from_index_tensor(indices_m1)
+        print(embeddings_m1[k].shape)
     # embeddings_m2 = get_clip_encodings_from_index_tensor(indices_m2)
+    print(embeddings_m1)
