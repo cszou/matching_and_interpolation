@@ -40,4 +40,5 @@ if __name__ == '__main__':
         embeddings_m1 = get_clip_encodings_from_index_tensor(v)
         print(embeddings_m1.shape)
         print(embeddings_m1[0, 0, 0])
+        break
     # embeddings_m2 = get_clip_encodings_from_index_tensor(indices_m2)
