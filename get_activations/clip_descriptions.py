@@ -15,7 +15,7 @@ from torchvision.utils import save_image
 def get_clip_encodings_from_index_vector(indices,  dataloader, model, clip_device):
     #print(f'indices for clip image have shape: {indices.shape}')
 
-    top_images = get_images_from_indices(indices, 1, dataloader).squeeze() #Need to squeeze for the model
+    top_images = get_images_from_indices(indices, dataloader).squeeze() #Need to squeeze for the model
 
     with torch.no_grad():
         image_features = model.encode_image(top_images.to(clip_device))
