@@ -29,9 +29,9 @@ if __name__=='__main__':
                     activations_norms = torch.linalg.matrix_norm(v)
                     # print(key, activations_norms.shape)
                     if i == 0:
-                        norms[key] = [activations_norms]
+                        norms[key] = [activations_norms.cpu()]
                     else:
-                        norms[key].append(activations_norms)
+                        norms[key].append(activations_norms.cpu())
         for k, v in norms.items():
             print(k, torch.cat(v).shape)
         # torch.save({'top_norms': top_norms,
