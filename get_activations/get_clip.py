@@ -68,9 +68,13 @@ def main():
         # print(k, v.shape)
         embeddings_m1[k] = get_clip_encodings_from_index_tensor(indices_m1[k])
         embeddings_m2[k] = get_clip_encodings_from_index_tensor(indices_m2[k])
+        print('embeddings shape')
+        print(embeddings_m1[k].shape)
         print(gen_cosine_sim_tensor(embeddings_m1[k], embeddings_m1[k]))
         print(get_cos(embeddings_m1[k], embeddings_m1[k]))
         similarities[k] = gen_cosine_sim_tensor(embeddings_m1[k], embeddings_m2[k])
+        print('final clip similarity:')
+        print(similarities[k])
         break
     return similarities
 
