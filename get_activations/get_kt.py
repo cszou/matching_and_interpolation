@@ -33,7 +33,7 @@ if __name__=='__main__':
                     else:
                         norms[key].append(activations_norms)
         for k, v in norms.items():
-            print(k, v)
+            print(k, torch.cat(v).shape)
         # torch.save({'top_norms': top_norms,
         #             'top_dataset_indices': top_dataset_indices}, model_name+'.result.pth.tar')
 
