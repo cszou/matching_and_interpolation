@@ -27,7 +27,7 @@ if __name__=='__main__':
                 model(data)
                 for key, v in activations.items():
                     activations_norms = torch.linalg.matrix_norm(v)
-                    print(key, v.shape)
+                    print(key, activations_norms.shape)
                     # if i == 0:
                     #     norms, dataset_indices = torch.topk(activations_norms, k, dim=0)
                         # print(norms.shape)
