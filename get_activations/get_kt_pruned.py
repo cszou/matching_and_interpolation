@@ -3,7 +3,7 @@ from scipy import stats
 
 models = ['m1', 'm2']
 layers = {'0': 64, '3': 192, '6': 384, '8': 256, '10': 256}
-res = {}
+results = {}
 for k,v in layers.items():
     ranks_1 = torch.load(f'm1_activations_features_{k}.result.pth.tar')
     ranks_2 = torch.load(f'm2_activations_features_{k}.result.pth.tar')
@@ -30,5 +30,5 @@ for k,v in layers.items():
         cor = res.correlation
         correlations[i]= cor
         print(cor)
-    res[k] = correlations
-torch.save(res, 'kt.pth.tar')
+    results[k] = correlations
+torch.save(results, 'kt.pth.tar')
