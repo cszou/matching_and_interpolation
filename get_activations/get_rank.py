@@ -17,6 +17,7 @@ if __name__=='__main__':
         model.to(device)
         model.eval()
         norms = {}
+        ranks = {}
         for name, layer in get_model_layers(model).items():
             if isinstance(layer, nn.Conv2d):
                 layer.register_forward_hook(get_activation(name, activations=activations))
@@ -34,10 +35,8 @@ if __name__=='__main__':
                     else:
                         norms[key].append(activations_norms.cpu())
         for k, v in norms.items():
-            a = torch.cat(v)
-            print(k, a.shape)
-            print(np.argsort(a.numpy(), 0).shape)
-            print(np.argsort(a.numpy(), 0))
-        # torch.save({'top_norms': top_norms,
-        #             'top_dataset_indices': top_dataset_indices}, model_name+'.result.pth.tar')
+            rank = torch.cat(v).numpy().transpose(0,1)
+            print(rank.shape)
+            ranks[k] = np.argsort(rank, 0)
+        torch.save({'ranks': ranks,}, model_name+'_ranks.result.pth.tar')
 
