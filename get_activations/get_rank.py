@@ -35,8 +35,8 @@ if __name__=='__main__':
                     else:
                         norms[key].append(activations_norms.cpu())
         for k, v in norms.items():
-            rank = torch.cat(v).numpy().transpose(0,1)
+            rank = np.argsort(torch.cat(v).transpose(0,1).numpy(), 0)
             print(rank.shape)
-            ranks[k] = np.argsort(rank, 0)
+            # ranks[k] = np.argsort(rank, 0)
         torch.save({'ranks': ranks,}, model_name+'_ranks.result.pth.tar')
 
