@@ -9,6 +9,6 @@ for k,v in layers.items():
     for i in range(layers[k]):
         print(f'ranks shape: {ranks_1.shape}')
         res = stats.kendalltau(ranks_1[i], ranks_2[i])
-        corr = res.statistic
+        corr = res.correlation
         print(f'feature{k}_layer{i} correlation: {corr}')
-        break
+        # break
