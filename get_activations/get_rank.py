@@ -36,11 +36,11 @@ if __name__=='__main__':
                         norms[key] = [activations_norms.cpu()]
                     else:
                         norms[key].append(activations_norms.cpu())
-                if ct >= 200:
-                    break
+                # if ct >= 200:
+                #     break
         for k, v in norms.items():
             rank = np.argsort(torch.cat(v).transpose(0,1).numpy(), 0)
             print(rank.shape)
             # ranks[k] = np.argsort(rank, 0)
-            torch.save(rank, model_name+'_ranks' + k +'.result.pth.tar')
+            torch.save(rank, model_name+'_ranks_' + k +'.result.pth.tar')
 
