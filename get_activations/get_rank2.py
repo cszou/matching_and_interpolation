@@ -1,4 +1,6 @@
 import numpy as np
+import torch
+
 from utils import *
 from torch import nn
 from tqdm import tqdm
@@ -40,8 +42,6 @@ if __name__=='__main__':
                 # if ct >= 200:
                 #     break
         for k, v in norms.items():
-            rank = np.argsort(torch.cat(v).transpose(0,1).numpy(), 0)
-            print(rank.shape)
-            # ranks[k] = np.argsort(rank, 0)
-            torch.save(rank, model_name+'_ranks_' + k +'.result.pth.tar')
+            act = torch.cat(v).transpose(0,1)
+            torch.save(act, model_name+'_activations_' + k +'.result.pth.tar')
 
