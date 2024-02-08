@@ -36,6 +36,7 @@ if __name__=='__main__':
         for k, v in norms.items():
             a = torch.cat(v)
             print(k, a.shape)
+            print(np.argsort(a.numpy(1)).shape)
             print(np.argsort(a.numpy(1)))
         # torch.save({'top_norms': top_norms,
         #             'top_dataset_indices': top_dataset_indices}, model_name+'.result.pth.tar')
