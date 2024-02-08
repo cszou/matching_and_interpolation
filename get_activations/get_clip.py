@@ -52,11 +52,6 @@ def gen_cosine_sim_tensor(embeddings1, embeddings2):
     return similarities
 
 
-def get_cos(embed1, embed2):
-    cos = torch.nn.CosineSimilarity(dim=-1)
-    return cos(embed1, embed1)
-
-
 def main():
     indices_m1 = torch.load('m1.result.pth.tar')['top_dataset_indices']
     indices_m2 = torch.load('m2.result.pth.tar')['top_dataset_indices']
@@ -81,7 +76,8 @@ def main():
         print('final clip similarity to use:')
         print(final_clip_similarities_to_use[k])
         # break
-    return similarities
+    torch.save({'similarities': similarities,
+                'final_clip_similarities_to_use': final_clip_similarities_to_use}, 'similarities.pth.tar')
 
 
 if __name__ == '__main__':
