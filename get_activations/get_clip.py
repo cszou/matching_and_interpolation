@@ -64,6 +64,7 @@ def main():
     embeddings_m1 = {}
     embeddings_m2 = {}
     similarities = {}
+    final_clip_similarities_to_use = {}
     for k in indices_m1.keys():
         # print(k, v.shape)
         print(k)
@@ -76,6 +77,9 @@ def main():
         similarities[k] = gen_cosine_sim_tensor(embeddings_m1[k], embeddings_m2[k])
         print('final clip similarity:')
         print(similarities[k].shape)
+        final_clip_similarities_to_use[k] = similarities[k].mean(dim=(1, 2))
+        print('final clip similarity to use:')
+        print(final_clip_similarities_to_use[k])
         # break
     return similarities
 
