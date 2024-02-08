@@ -17,13 +17,15 @@ if __name__=='__main__':
         model.to(device)
         model.eval()
         norms = {}
-        ranks = {}
+        # ranks = {}
         for name, layer in get_model_layers(model).items():
             if isinstance(layer, nn.Conv2d):
                 layer.register_forward_hook(get_activation(name, activations=activations))
         data_loader = get_topk_dataset_loader()
+        ct = 0
         with torch.no_grad():
             for i, (data, _, batch_indices) in enumerate(tqdm(data_loader)):
+                ct += 1
                 data = data.to(device)
                 batch_indices = batch_indices.to(device)
                 model(data)
@@ -34,9 +36,11 @@ if __name__=='__main__':
                         norms[key] = [activations_norms.cpu()]
                     else:
                         norms[key].append(activations_norms.cpu())
+                if ct >= 200:
+                    break
         for k, v in norms.items():
             rank = np.argsort(torch.cat(v).transpose(0,1).numpy(), 0)
             print(rank.shape)
             # ranks[k] = np.argsort(rank, 0)
-        torch.save({'ranks': ranks,}, model_name+'_ranks.result.pth.tar')
+            torch.save(rank, model_name+'_ranks' + k +'.result.pth.tar')
 
