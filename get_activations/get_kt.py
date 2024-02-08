@@ -27,7 +27,7 @@ if __name__=='__main__':
                 model(data)
                 for key, v in activations.items():
                     activations_norms = torch.linalg.matrix_norm(v)
-                    print(key, activations_norms.shape)
+                    # print(key, activations_norms.shape)
                     if i == 0:
                         norms[key] = [activations_norms]
                     else:
