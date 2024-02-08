@@ -27,7 +27,7 @@ if __name__=='__main__':
                 batch_indices = batch_indices.to(device)
                 model(data)
                 for key, v in activations.items():
-                    activations_norms = torch.linalg.matrix_norm(v.transpose(0,1))
+                    activations_norms = torch.linalg.matrix_norm(v)
                     # print(key, activations_norms.shape)
                     if i == 0:
                         norms[key] = [activations_norms.cpu()]
@@ -36,7 +36,7 @@ if __name__=='__main__':
         for k, v in norms.items():
             a = torch.cat(v)
             print(k, a.shape)
-            print(np.argsort(a.numpy()))
+            print(np.argsort(a.numpy(1)))
         # torch.save({'top_norms': top_norms,
         #             'top_dataset_indices': top_dataset_indices}, model_name+'.result.pth.tar')
 
