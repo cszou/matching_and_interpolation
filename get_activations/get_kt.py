@@ -1,3 +1,4 @@
+import numpy as np
 from utils import *
 from torch import nn
 from tqdm import tqdm
@@ -26,14 +27,16 @@ if __name__=='__main__':
                 batch_indices = batch_indices.to(device)
                 model(data)
                 for key, v in activations.items():
-                    activations_norms = torch.linalg.matrix_norm(v)
+                    activations_norms = torch.linalg.matrix_norm(v.transpose(0,1))
                     # print(key, activations_norms.shape)
                     if i == 0:
                         norms[key] = [activations_norms.cpu()]
                     else:
                         norms[key].append(activations_norms.cpu())
         for k, v in norms.items():
-            print(k, torch.cat(v).shape)
+            a = torch.cat(v).shape
+            print(k, a)
+            print(np.argsort(a.numpy))
         # torch.save({'top_norms': top_norms,
         #             'top_dataset_indices': top_dataset_indices}, model_name+'.result.pth.tar')
 
