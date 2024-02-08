@@ -32,10 +32,11 @@ if __name__=='__main__':
                 for key, v in activations.items():
                     activations_norms = torch.linalg.matrix_norm(v)
                     # print(key, activations_norms.shape)
-                    if i == 0:
-                        norms[key] = [activations_norms.cpu()]
-                    else:
-                        norms[key].append(activations_norms.cpu())
+                    norms[key].append(activations_norms.cpu())
+                    # if i == 0:
+                    #     norms[key] = [activations_norms.cpu()]
+                    # else:
+                    #     norms[key].append(activations_norms.cpu())
                 # if ct >= 200:
                 #     break
         for k, v in norms.items():
