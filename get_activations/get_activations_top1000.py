@@ -21,7 +21,7 @@ if __name__=='__main__':
         for name, layer in get_model_layers(model).items():
             if isinstance(layer, nn.Conv2d):
                 layer.register_forward_hook(get_activation(name, activations=activations))
-        data_loader = get_topk_dataset_loader()
+        data_loader = get_topk_dataset_loader(batch_size=1024)
         with torch.no_grad():
             for i, (data, _, batch_indices) in enumerate(tqdm(data_loader)):
                 data = data.to(device)
