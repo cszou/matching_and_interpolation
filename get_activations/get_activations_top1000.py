@@ -28,6 +28,8 @@ if __name__=='__main__':
                 batch_indices = batch_indices.to(device)
                 model(data)
                 for key, v in activations.items():
+                    if v.shape[0] < 1000:
+                        pass
                     activations_norms = torch.linalg.matrix_norm(v)
                     if i == 0:
                         norms, dataset_indices = torch.topk(activations_norms, k, dim=0)
