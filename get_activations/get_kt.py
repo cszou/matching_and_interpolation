@@ -6,7 +6,7 @@ layers = {'0': 64, '3': 192, '6': 384, '8': 256, '10': 256}
 results = {}
 for k,v in layers.items():
     act_1 = torch.load(f'./activations_results/m1_activations_features_{k}.result.pth.tar')
-    act_2 = torch.load(f'./activations_results/m1_activations_features_{k}.result.pth.tar')
+    act_2 = torch.load(f'./activations_results/m2_activations_features_{k}.result.pth.tar')
     num_channels = act_1.shape[0]
     correlations = torch.zeros([num_channels])
     print(f'features {k}')
