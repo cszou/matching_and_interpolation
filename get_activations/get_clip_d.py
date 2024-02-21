@@ -14,7 +14,7 @@ def get_clip_encodings_from_index_vector(indices, dataloader, model, clip_device
     return image_features
 
 
-def get_clip_encodings_from_index_tensor(indices, topk=10,  batch_size = 256, num_workers=10):
+def get_clip_encodings_from_index_tensor(indices, topk=10, batch_size=256, num_workers=10):
     clip_device = "cuda" if torch.cuda.is_available() else "cpu"
     model, preprocess = clip.load('ViT-B/32', clip_device)
     model = model.eval()
@@ -22,12 +22,11 @@ def get_clip_encodings_from_index_tensor(indices, topk=10,  batch_size = 256, nu
     print('grabbing embeddings of top images for all channels')
     all_embeddings = []
     for index_of_top_kth_images in tqdm(range(topk)):
-        top_kth_embedding = get_clip_encodings_from_index_vector(indices[index_of_top_kth_images].unsqueeze(0), dataloader, model, clip_device)
+        top_kth_embedding = get_clip_encodings_from_index_vector(indices[index_of_top_kth_images].unsqueeze(0),
+                                                                 dataloader, model, clip_device)
         all_embeddings.append(top_kth_embedding.unsqueeze(0))
 
     embeddings_tensor = torch.vstack(all_embeddings)
-    # top_kth_embedding = get_clip_encodings_from_index_vector(indices, dataloader, model, clip_device)
-    # embeddings_tensor = top_kth_embedding
     print(f'overall embeddings shape: {embeddings_tensor.shape}')
 
     return embeddings_tensor
@@ -41,11 +40,11 @@ def gen_cosine_sim_tensor(embeddings1, embeddings2):
     #normalize the embeddings for easier similarity calculations
     embeddings1 = F.normalize(embeddings1, dim=-1)
     embeddings2 = F.normalize(embeddings2, dim=-1)
-    # embeddings1 = embeddings1.unsqueeze(1)
-    # embeddings2 = embeddings2.unsqueeze(0).permute(0,1,3,2)
+    embeddings1 = embeddings1.unsqueeze(1)
+    embeddings2 = embeddings2.unsqueeze(0).permute(0,1,3,2)
     print('embeddings1 shape: ', embeddings1.shape)
-    print('embeddings2 shape: ', embeddings2.permute(0,2,1).shape)
-    similarities =  torch.matmul(embeddings1, embeddings2.permute(0,2,1))
+    print('embeddings2 shape: ', embeddings2.shape)
+    similarities =  torch.matmul(embeddings1, embeddings2)
     #Generate a [channels, channels,topk,topk] tensor with the cosine similarity
     print(f'similarites shape: {similarities.shape}')
 
