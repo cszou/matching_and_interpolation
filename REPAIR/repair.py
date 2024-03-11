@@ -1,4 +1,5 @@
 import os
+from collections import OrderedDict
 
 from torchvision import models, datasets
 from tqdm import tqdm
@@ -68,10 +69,10 @@ def make_repaired_net(net):
 
 def main():
     m1 = models.alexnet()
-    m1.load_state_dict(torch.load('../get_activations/m1.checkpoint.pth.tar')['state_dict'])
+    m1.load_state_dict(torch.load('./m1.checkpoint.pth.tar')['state_dict'])
     wrap1 = make_tracked_net(m1)
     m2 = models.alexnet()
-    m2.load_state_dict(torch.load('../get_activations/m2.checkpoint.pth.tar')['state_dict'])
+    m2.load_state_dict(torch.load('./m2.checkpoint.pth.tar')['state_dict'])
     wrap2 = make_tracked_net(m2)
     print(wrap1)
     print(wrap2)
@@ -102,6 +103,14 @@ def main():
     val_model2 = weight_interp.validate(val_loader, m2, criterion)
     print(val_model1)
     print(val_model2)
+    matchedPara = OrderedDict()
+    for k in m1['state_dict'].keys():
+        matchedPara[k] = 0.5 * m1['state_dict'][k] + 0.5 * m2['state_dict'][k]
+    modelMatched = models.alexnet()
+    modelMatched.load_state_dict(matchedPara)
+    val_matched = weight_interp.validate(val_loader, modelMatched, criterion)
+    print(val_matched)
+
 
 if __name__ == '__main__':
     main()
