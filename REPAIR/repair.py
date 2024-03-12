@@ -106,7 +106,7 @@ def main():
     print(val_model1)
     print(val_model2)
     matchedPara = OrderedDict()
-    for k in m1['state_dict'].keys():
+    for k in p1['state_dict'].keys():
         matchedPara[k] = 0.5 * p1['state_dict'][k] + 0.5 * p2['state_dict'][k]
     modelMatched = models.alexnet()
     modelMatched.load_state_dict(matchedPara)
