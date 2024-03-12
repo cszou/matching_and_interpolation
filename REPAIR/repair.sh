@@ -15,9 +15,6 @@ pip install --no-index torch torchvision numpy scipy tqdm
 # moving dataset and code to $SLURM_TMPDIR
 echo "moving datasets"
 cp ~/projects/rrg-eugenium/DatasetsBelilovsky/imagenet_data/ILSVRC2012_img* $SLURM_TMPDIR
-echo "moving code"
-cp -r ~/scratch/proj/pytorch_examples/imagenet/* $SLURM_TMPDIR
-cd $SLURM_TMPDIR
 
 echo "extract training images"
 mkdir imagenet && mkdir imagenet/train && mv ILSVRC2012_img_train.tar imagenet/train/ && cd imagenet/train
@@ -38,7 +35,7 @@ mkdir imagenet/val && mv ILSVRC2012_img_val.tar imagenet/val/ && cd imagenet/val
 # wget -qO- https://raw.githubusercontent.com/soumith/imagenetloader.torch/master/valprep.sh | bash
 # no internet connection use local files
 echo "move validation images to folders"
-mv ~/projects/rrg-eugenium/cszou/matching_and_interpolation/bash/valprep.sh $SLURM_TMPDIR/imagenet/val
+cp ~/projects/rrg-eugenium/cszou/matching_and_interpolation/bash/valprep.sh $SLURM_TMPDIR/imagenet/val
 bash valprep.sh
 mkdir $SLURM_TMPDIR/output
 
@@ -51,11 +48,11 @@ echo "copy trained model parameters"
 cp ~/projects/rrg-eugenium/cszou/experiment_results/matching/m* ./
 
 echo "copy validation codes"
-mkdir $SCRATCH/weight_matching
-cp ~/project/rrg--/cszou/matching_and_interpolation/weight_matching/* ./weight_matching/
+mkdir $SLURM_TMPDIR/weight_matching
+cp ~/projects/rrg-eugenium/cszou/matching_and_interpolation/weight_matching/* ./weight_matching/
 
 echo "copy REPAIR codes"
-cp ~/project/rrg--/cszou/matching_and_interpolation/REPAIR/* ./
+cp ~/projects/rrg-eugenium/cszou/matching_and_interpolation/REPAIR/* ./
 
 # run interpolation code
 echo "repair model"
