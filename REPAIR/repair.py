@@ -68,11 +68,13 @@ def make_repaired_net(net):
 
 
 def main():
+    p1 = torch.load('./m1.checkpoint.pth.tar')
+    p2 = torch.load('./m2.checkpoint.pth.tar')
     m1 = models.alexnet()
-    m1.load_state_dict(torch.load('./m1.checkpoint.pth.tar')['state_dict'])
+    m1.load_state_dict(p1['state_dict'])
     wrap1 = make_tracked_net(m1)
     m2 = models.alexnet()
-    m2.load_state_dict(torch.load('./m2.checkpoint.pth.tar')['state_dict'])
+    m2.load_state_dict(p2['state_dict'])
     wrap2 = make_tracked_net(m2)
     print(wrap1)
     print(wrap2)
@@ -105,7 +107,7 @@ def main():
     print(val_model2)
     matchedPara = OrderedDict()
     for k in m1['state_dict'].keys():
-        matchedPara[k] = 0.5 * m1['state_dict'][k] + 0.5 * m2['state_dict'][k]
+        matchedPara[k] = 0.5 * p1['state_dict'][k] + 0.5 * p2['state_dict'][k]
     modelMatched = models.alexnet()
     modelMatched.load_state_dict(matchedPara)
     val_matched = weight_interp.validate(val_loader, modelMatched, criterion)
