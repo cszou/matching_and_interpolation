@@ -221,12 +221,16 @@ for i in range(n):
 
 
 print(f'corr_vectors: {corr_vectors}')
+for v in corr_vectors:
+    print(v.shape)
 
 # print sample parameters after permutation
 print("sample parameters after permutation:")
 print(f"model 2 feature 0 weight {model2.state_dict()['features.0.weight'][0, 0, 0, 0]}")
 print(f"model 2 classifier 1 weight {model2.state_dict()['classifier.1.weight'][0, 0]}")
 
+# save correlations
+torch.save(corr_vectors, 'corr.pth.tar')
 
 # save permuted model parameters
 # state = {'state_dict': model2.state_dict(), }
