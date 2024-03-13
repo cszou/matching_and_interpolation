@@ -164,8 +164,8 @@ model2 = torchvision.models.alexnet()
 model1 = load_alexnet(model1, './m1.checkpoint.pth.tar')
 model2 = load_alexnet(model2, './m2o.checkpoint.pth.tar')
 
-state = {'state_dict': model2.state_dict(), }
-torch.save(state, 'model2_orig.checkpoint.pth.tar')
+# state = {'state_dict': model2.state_dict(), }
+# torch.save(state, 'model2_orig.checkpoint.pth.tar')
 
 # print sample parameters before permutation
 print("sample parameters before permutation:")
@@ -225,7 +225,7 @@ print(f"model 2 classifier 1 weight {model2.state_dict()['classifier.1.weight'][
 
 
 # save permuted model parameters
-state = {'state_dict': model2.state_dict(), }
-torch.save(state, 'model2_perm.checkpoint.pth.tar')
-state = {'state_dict': model1.state_dict(), }
-torch.save(state, 'model1_orig.checkpoint.pth.tar')
+# state = {'state_dict': model2.state_dict(), }
+# torch.save(state, 'model2_perm.checkpoint.pth.tar')
+# state = {'state_dict': model1.state_dict(), }
+# torch.save(state, 'model1_orig.checkpoint.pth.tar')
