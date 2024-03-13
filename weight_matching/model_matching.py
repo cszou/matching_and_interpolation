@@ -161,8 +161,12 @@ def permute_input2(perm_map, layer):
 model1 = torchvision.models.alexnet()
 model2 = torchvision.models.alexnet()
 
-model1 = load_alexnet(model1, './m1.checkpoint.pth.tar')
-model2 = load_alexnet(model2, './m2o.checkpoint.pth.tar')
+# model1 = load_alexnet(model1, './m1.checkpoint.pth.tar')
+# model2 = load_alexnet(model2, './m2o.checkpoint.pth.tar')
+
+model1.load_state_dict(torch.load('./m1.checkpoint.pth.tar')['state_dict'])
+model2.load_state_dict(torch.load('./m2o.checkpoint.pth.tar')['state_dict'])
+
 
 # state = {'state_dict': model2.state_dict(), }
 # torch.save(state, 'model2_orig.checkpoint.pth.tar')
