@@ -105,7 +105,7 @@ def reset_bn_stats(model):
             m.reset_running_stats()
     model.train()
     with torch.no_grad(), autocast():
-        for images, _ in train_loader:
+        for images, _ in tqdm(train_loader):
             output = model(images.cuda())
 
 

@@ -11,6 +11,8 @@ import torchvision.transforms as T
 import torchvision.models
 
 
+corr_vectors = []
+
 # function to load model parameters from checkpoint
 def load_alexnet(model, path):
     preTrained = torch.load(path)['state_dict']
@@ -123,6 +125,8 @@ def get_layer_perm1(corr_mtx):
     row_ind, col_ind = scipy.optimize.linear_sum_assignment(corr_mtx_a, maximize=True)
     assert (row_ind == np.arange(len(corr_mtx_a))).all()
     perm_map = torch.tensor(col_ind).long()
+    corr_vec = corr_mtx[:, perm_map].diag()
+    corr_vectors.append(corr_vec.float())
     return perm_map
 
 
@@ -157,8 +161,8 @@ def permute_input2(perm_map, layer):
 model1 = torchvision.models.alexnet()
 model2 = torchvision.models.alexnet()
 
-model1 = load_alexnet(model1, 'model1/checkpoint.pth.tar')
-model2 = load_alexnet(model2, 'model2/checkpoint.pth.tar')
+model1 = load_alexnet(model1, './checkpoint.pth.tar')
+model2 = load_alexnet(model2, './checkpoint.pth.tar')
 
 state = {'state_dict': model2.state_dict(), }
 torch.save(state, 'model2_orig.checkpoint.pth.tar')
@@ -212,10 +216,13 @@ for i in range(n):
         permute_input(perm_map, next_layer)
 
 
+print(f'corr_vectors: {corr_vectors}')
+
 # print sample parameters after permutation
 print("sample parameters after permutation:")
 print(f"model 2 feature 0 weight {model2.state_dict()['features.0.weight'][0, 0, 0, 0]}")
 print(f"model 2 classifier 1 weight {model2.state_dict()['classifier.1.weight'][0, 0]}")
+
 
 # save permuted model parameters
 state = {'state_dict': model2.state_dict(), }
