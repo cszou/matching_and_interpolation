@@ -12,6 +12,8 @@ source $SLURM_TMPDIR/myvirenv/bin/activate
 
 pip install --no-index torch torchvision numpy scipy tqdm
 
+
+cd $SLURM_TMPDIR
 # moving dataset and code to $SLURM_TMPDIR
 echo "moving datasets"
 cp ~/projects/rrg-eugenium/DatasetsBelilovsky/imagenet_data/ILSVRC2012_img* $SLURM_TMPDIR
