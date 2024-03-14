@@ -186,6 +186,8 @@ def main():
     # around conv layers in (model0, model1, model_a).
     corr_vec_it = iter(corr_vectors)
     for track0, track1, reset_a in zip(wrap1.modules(), wrap2.modules(), wrap_a.modules()):
+        print(track0)
+        print(reset_a)
         if not isinstance(track0, TrackLayer):
             continue
         assert (isinstance(track0, TrackLayer)
