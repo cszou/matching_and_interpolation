@@ -109,6 +109,37 @@ def reset_bn_stats(model):
             output = model(images.cuda())
 
 
+def fuse_conv_bn(conv, bn):
+    fused_conv = torch.nn.Conv2d(conv.in_channels,
+                                 conv.out_channels,
+                                 kernel_size=conv.kernel_size,
+                                 stride=conv.stride,
+                                 padding=conv.padding,
+                                 bias=True)
+
+    # set weights
+    w_conv = conv.weight.clone()
+    bn_std = (bn.eps + bn.running_var).sqrt()
+    gamma = bn.weight / bn_std
+    fused_conv.weight.data = (w_conv * gamma.reshape(-1, 1, 1, 1))
+
+    # set bias
+    beta = bn.bias + gamma * (-bn.running_mean + conv.bias)
+    fused_conv.bias.data = beta
+
+    return fused_conv
+
+
+def fuse_tracked_net(net):
+    net1 = models.alexnet()
+    for i, rlayer in enumerate(net.features):
+        if isinstance(rlayer, ResetLayer):
+            fused_conv = fuse_conv_bn(rlayer.layer, rlayer.bn)
+            net1.features[i].load_state_dict(fused_conv.state_dict())
+    net1.classifier.load_state_dict(net.classifier.state_dict())
+    return net1
+
+
 def main():
     p1 = torch.load('./m1.checkpoint.pth.tar')
     p2 = torch.load('./m2.checkpoint.pth.tar')
@@ -147,7 +178,44 @@ def main():
     print('wrap1:', val_wrap1)
     print('wrap2:', val_wrap2)
 
+    corr_vectors = torch.load('./corr.pth.tar')
+    alpha = 0.5
 
+    wrap_a = make_repaired_net(modelMatched)
+    # Iterate through corresponding triples of (TrackLayer, TrackLayer, ResetLayer)
+    # around conv layers in (model0, model1, model_a).
+    corr_vec_it = iter(corr_vectors)
+    for track0, track1, reset_a in zip(wrap1.modules(), wrap2.modules(), wrap_a.modules()):
+        if not isinstance(track0, TrackLayer):
+            continue
+        assert (isinstance(track0, TrackLayer)
+                and isinstance(track1, TrackLayer)
+                and isinstance(reset_a, ResetLayer))
+
+        # get neuronal statistics of original networks
+        mu0, std0 = track0.get_stats()
+        mu1, std1 = track1.get_stats()
+        # set the goal neuronal statistics for the merged network
+        goal_mean = (1 - alpha) * mu0 + alpha * mu1
+        goal_std = (1 - alpha) * std0 + alpha * std1
+
+        corr_vec = next(corr_vec_it)
+        exp_mean = goal_mean
+        exp_std = ((1 - alpha) ** 2 * std0 ** 2 + alpha ** 2 * std1 ** 2 + 2 * alpha * (
+                    1 - alpha) * std0 * std1 * corr_vec) ** 0.5
+        goal_std_ratio = goal_std / exp_std
+        goal_mean_shift = goal_mean - goal_std_ratio * exp_mean
+
+        # Y = aX + b, where X has mean/var mu/sigma^2, and we want nu/tau^2,
+        # so we set a = tau/sigma and b = nu - (tau / sigma) mu
+
+        reset_a.set_stats(goal_mean_shift, goal_std_ratio)
+
+    model_b = fuse_tracked_net(wrap_a)
+    val_wrap_a = weight_interp.validate(val_loader, wrap_a, criterion)
+    val_model_b = weight_interp.validate(val_loader, model_b, criterion)
+    print(f'wrap a: {val_wrap_a}')
+    print(f'model b: {val_model_b}')
 
 if __name__ == '__main__':
     main()
