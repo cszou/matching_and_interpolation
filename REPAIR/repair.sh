@@ -59,3 +59,6 @@ cp ~/projects/rrg-eugenium/cszou/matching_and_interpolation/REPAIR/* ./
 # run interpolation code
 echo "repair model"
 python repair.py
+cp ./wrap_a ~/projects/rrg-eugenium/cszou/matching_and_interpolation/REPAIR/
+cp ./model_b ~/projects/rrg-eugenium/cszou/matching_and_interpolation/REPAIR/
+cp ./modelMatched ~/projects/rrg-eugenium/cszou/matching_and_interpolation/REPAIR/

@@ -218,6 +218,9 @@ def main():
     val_model_b = weight_interp.validate(val_loader, model_b, criterion)
     print(f'wrap a: {val_wrap_a}')
     print(f'model b: {val_model_b}')
+    torch.save(wrap_a, 'wrap_a')
+    torch.save(model_b, 'model_b')
+    torch.save(modelMatched, 'modelMatched')
 
 if __name__ == '__main__':
     main()
