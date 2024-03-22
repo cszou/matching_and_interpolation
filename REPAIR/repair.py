@@ -71,6 +71,9 @@ class ResetLayer(nn.Module):
         self.bn.bias.data = goal_mean
         self.bn.weight.data = goal_std
 
+    def get_stats(self):
+        return self.bn.running_mean, self.bn.running_var.sqrt()
+
     def forward(self, x):
         x1 = self.layer(x)
         return self.bn(x1)
@@ -173,10 +176,13 @@ def main():
 
     reset_bn_stats(wrap1)
     reset_bn_stats(wrap2)
+    reset_bn_stats(modelMatched)
     val_wrap1 = weight_interp.validate(val_loader, wrap1, criterion)
     val_wrap2 = weight_interp.validate(val_loader, wrap2, criterion)
+    val_modelMatched = weight_interp.validate(val_loader, modelMatched, criterion)
     print('wrap1:', val_wrap1)
     print('wrap2:', val_wrap2)
+    print('modelMatched:', val_modelMatched)
 
     corr_vectors = torch.load('./corr.pth.tar')
     alpha = 0.5
@@ -186,8 +192,8 @@ def main():
     # around conv layers in (model0, model1, model_a).
     corr_vec_it = iter(corr_vectors)
     for track0, track1, reset_a in zip(wrap1.modules(), wrap2.modules(), wrap_a.modules()):
-        print(track0)
-        print(reset_a)
+        # print(track0)
+        # print(reset_a)
         if not isinstance(track0, TrackLayer):
             continue
         assert (isinstance(track0, TrackLayer)
@@ -197,6 +203,9 @@ def main():
         # get neuronal statistics of original networks
         mu0, std0 = track0.get_stats()
         mu1, std1 = track1.get_stats()
+        print(f'model 1: {mu0}, {std0}')
+        print(f'model 2: {mu1}, {std1}')
+        print(f'model matched: {reset_a.get_stats()}')
         # set the goal neuronal statistics for the merged network
         goal_mean = (1 - alpha) * mu0 + alpha * mu1
         goal_std = (1 - alpha) * std0 + alpha * std1
