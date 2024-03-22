@@ -9,7 +9,7 @@
 cd $SLURM_TMPDIR
 # moving dataset and code to $SLURM_TMPDIR
 echo "moving datasets"
-cp ~/projects/rrg-eugenium/DatasetsBelilovsky/imagenet_data/ILSVRC2012_img* $SLURM_TMPDIR
+cp ~/projects/rrg-eugenium/DatasetsBelilovsky/imagenet_data/ILSVRC2012_* $SLURM_TMPDIR
 
 echo "extract training images"
 mkdir imagenet && mkdir imagenet/train && mv ILSVRC2012_img_train.tar imagenet/train/ && cd imagenet/train
@@ -37,3 +37,5 @@ mkdir $SLURM_TMPDIR/output
 cd $SLURM_TMPDIR
 find imagenet/train/ -name "*.JPEG" | wc -l
 find imagenet/val/ -name "*.JPEG" | wc -l
+
+mv ./ILSVRC2012_devkit_t12.tar.gz ./imagenet/
