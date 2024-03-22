@@ -6,12 +6,6 @@
 # SBATCH --time=2:00:00                  # The job will run for 12 hours
 # SBATCH -o /scratch/vs2410/slurm-%j.out  # Write the log in $SCRATCH
 
-module load python/3.10
-virtualenv --no-download $SLURM_TMPDIR/myvirenv
-source $SLURM_TMPDIR/myvirenv/bin/activate
-
-pip install --no-index torch torchvision numpy scipy tqdm
-
 
 cd $SLURM_TMPDIR
 # extract imagenet images
