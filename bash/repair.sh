@@ -14,36 +14,9 @@ pip install --no-index torch torchvision numpy scipy tqdm
 
 
 cd $SLURM_TMPDIR
-# moving dataset and code to $SLURM_TMPDIR
-echo "moving datasets"
-cp ~/projects/rrg-eugenium/DatasetsBelilovsky/imagenet_data/ILSVRC2012_img* $SLURM_TMPDIR
-
-echo "extract training images"
-mkdir imagenet && mkdir imagenet/train && mv ILSVRC2012_img_train.tar imagenet/train/ && cd imagenet/train
-tar -xvf ILSVRC2012_img_train.tar && rm -f ILSVRC2012_img_train.tar
-#
-# At this stage imagenet/train will contain 1000 compressed .tar files, one for each category
-#
-# For each .tar file:
-#   1. create directory with same name as .tar file
-#   2. extract and copy contents of .tar file into directory
-#   3. remove .tar file
-find . -name "*.tar" | while read NAME ; do mkdir -p "${NAME%.tar}"; tar -xvf "${NAME}" -C "${NAME%.tar}"; rm -f "${NAME}"; done
-# Create validation directory; move .tar file; change directory; extract validation .tar; remove compressed file
-echo "extract validation images"
-cd $SLURM_TMPDIR
-mkdir imagenet/val && mv ILSVRC2012_img_val.tar imagenet/val/ && cd imagenet/val && tar -xvf ILSVRC2012_img_val.tar && rm -f ILSVRC2012_img_val.tar
-# get script from soumith and run; this script creates all class directories and moves images into corresponding directories
-# wget -qO- https://raw.githubusercontent.com/soumith/imagenetloader.torch/master/valprep.sh | bash
-# no internet connection use local files
-echo "move validation images to folders"
-cp ~/projects/rrg-eugenium/cszou/matching_and_interpolation/bash/valprep.sh $SLURM_TMPDIR/imagenet/val
-bash valprep.sh
-mkdir $SLURM_TMPDIR/output
-
-cd $SLURM_TMPDIR
-find imagenet/train/ -name "*.JPEG" | wc -l
-find imagenet/val/ -name "*.JPEG" | wc -l
+# extract imagenet images
+cp ~/projects/rrg-eugenium/cszou/matching_and_interpolation/bash/imagenet.sh ./
+bash imagenet.sh
 
 # copy models
 echo "copy trained model parameters"
