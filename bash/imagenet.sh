@@ -6,13 +6,6 @@
 # SBATCH --time=2:00:00                  # The job will run for 12 hours
 # SBATCH -o /scratch/vs2410/slurm-%j.out  # Write the log in $SCRATCH
 
-module load python/3.10
-virtualenv --no-download $SLURM_TMPDIR/myvirenv
-source $SLURM_TMPDIR/myvirenv/bin/activate
-
-pip install --no-index torch torchvision numpy scipy tqdm
-
-
 cd $SLURM_TMPDIR
 # moving dataset and code to $SLURM_TMPDIR
 echo "moving datasets"
@@ -31,7 +24,7 @@ tar -xvf ILSVRC2012_img_train.tar && rm -f ILSVRC2012_img_train.tar
 find . -name "*.tar" | while read NAME ; do mkdir -p "${NAME%.tar}"; tar -xvf "${NAME}" -C "${NAME%.tar}"; rm -f "${NAME}"; done
 # Create validation directory; move .tar file; change directory; extract validation .tar; remove compressed file
 echo "extract validation images"
-cd ../..
+cd $SLURM_TMPDIR
 mkdir imagenet/val && mv ILSVRC2012_img_val.tar imagenet/val/ && cd imagenet/val && tar -xvf ILSVRC2012_img_val.tar && rm -f ILSVRC2012_img_val.tar
 # get script from soumith and run; this script creates all class directories and moves images into corresponding directories
 # wget -qO- https://raw.githubusercontent.com/soumith/imagenetloader.torch/master/valprep.sh | bash
@@ -44,21 +37,3 @@ mkdir $SLURM_TMPDIR/output
 cd $SLURM_TMPDIR
 find imagenet/train/ -name "*.JPEG" | wc -l
 find imagenet/val/ -name "*.JPEG" | wc -l
-
-# copy models
-echo "copy trained model parameters"
-cp ~/projects/rrg-eugenium/cszou/experiment_results/matching/m* ./
-
-echo "copy validation codes"
-mkdir $SLURM_TMPDIR/weight_matching
-cp ~/projects/rrg-eugenium/cszou/matching_and_interpolation/weight_matching/* ./weight_matching/
-
-echo "copy REPAIR codes"
-cp ~/projects/rrg-eugenium/cszou/matching_and_interpolation/REPAIR/* ./
-
-# run interpolation code
-echo "repair model"
-python repair.py
-cp ./wrap_a ~/projects/rrg-eugenium/cszou/matching_and_interpolation/REPAIR/
-cp ./model_b ~/projects/rrg-eugenium/cszou/matching_and_interpolation/REPAIR/
-cp ./modelMatched ~/projects/rrg-eugenium/cszou/matching_and_interpolation/REPAIR/
