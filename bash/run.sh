@@ -7,9 +7,10 @@
 # SBATCH -o /scratch/vs2410/slurm-%j.out  # Write the log in $SCRATCH
 
 cd $SLURM_TMPDIR
-cp ~/projects/rrg-eugenium/cszou/matching_and_interpolation/get_activatios/repaired.result.pth.tar ./
-cp ~/projects/rrg-eugenium/cszou/matching_and_interpolation/get_activatios/get_png.py ./
-cp ~/projects/rrg-eugenium/cszou/matching_and_interpolation/get_activatios/utils.py ./
+cp ~/projects/rrg-eugenium/cszou/matching_and_interpolation/get_activations/repaired.result.pth.tar ./
+cp ~/projects/rrg-eugenium/cszou/matching_and_interpolation/get_activations/get_png.py ./
+cp ~/projects/rrg-eugenium/cszou/matching_and_interpolation/get_activations/utils.py ./
+ls
 
 cp ~/projects/rrg-eugenium/cszou/matching_and_interpolation/bash/imagenet.sh ./
 bash imagenet.sh
