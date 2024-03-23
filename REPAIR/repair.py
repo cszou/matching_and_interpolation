@@ -91,13 +91,13 @@ class ResetLayer(nn.Module):
 class ConvResetLayer(ResetLayer):
     def __init__(self, layer):
         super().__init__(layer)
-        self.bn = nn.BatchNorm2d(layer.out_channels)
+        self.bn = nn.BatchNorm2d(layer.out_features)
 
 
 class LinearResetLayer(ResetLayer):
     def __init__(self, layer):
         super().__init__(layer)
-        self.bn = nn.BatchNorm1d(layer.out_channels)
+        self.bn = nn.BatchNorm1d(layer.out_features)
 
 
 # adds TrackLayers around every conv layer
