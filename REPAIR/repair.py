@@ -173,13 +173,14 @@ def main():
     modelMatched.load_state_dict(matchedPara)
     val_matched = weight_interp.validate(val_loader, modelMatched, criterion)
     print('mixed model:', val_matched)
+    wrapMatched = make_tracked_net(modelMatched)
 
     reset_bn_stats(wrap1)
     reset_bn_stats(wrap2)
-    reset_bn_stats(modelMatched)
+    reset_bn_stats(wrapMatched)
     val_wrap1 = weight_interp.validate(val_loader, wrap1, criterion)
     val_wrap2 = weight_interp.validate(val_loader, wrap2, criterion)
-    val_modelMatched = weight_interp.validate(val_loader, modelMatched, criterion)
+    val_modelMatched = weight_interp.validate(val_loader, wrapMatched, criterion)
     print('wrap1:', val_wrap1)
     print('wrap2:', val_wrap2)
     print('modelMatched:', val_modelMatched)
@@ -205,7 +206,7 @@ def main():
         mu1, std1 = track1.get_stats()
         print(f'model 1: {mu0}, {std0}')
         print(f'model 2: {mu1}, {std1}')
-        print(f'model matched: {reset_a.get_stats()}')
+        print(f'model matched: {wrapMatched.get_stats()}')
         # set the goal neuronal statistics for the merged network
         goal_mean = (1 - alpha) * mu0 + alpha * mu1
         goal_std = (1 - alpha) * std0 + alpha * std1
