@@ -107,8 +107,9 @@ def make_tracked_net(net):
     for i, layer in enumerate(net1.features):
         if isinstance(layer, nn.Conv2d):
             net1.features[i] = ConvTrackLayer(layer)
-        elif isinstance(layer, nn.Linear):
-            net1.features[i] = LinearTrackLayer(layer)
+    for i, layer in enumerate(net1.classifier):
+        if isinstance(layer, nn.Linear):
+            net1.classifier[i] = LinearTrackLayer(layer)
     return net1.cuda().eval()
 
 
@@ -119,8 +120,9 @@ def make_repaired_net(net):
     for i, layer in enumerate(net1.features):
         if isinstance(layer, nn.Conv2d):
             net1.features[i] = ConvResetLayer(layer)
-        elif isinstance(layer, nn.Linear):
-            net1.features[i] = LinearResetLayer(layer)
+    for i, layer in enumerate(net1.classifier):
+        if isinstance(layer, nn.Linear):
+            net1.classifier[i] = LinearResetLayer(layer)
     return net1.cuda().eval()
 
 
@@ -171,7 +173,10 @@ def fuse_tracked_net(net):
         if isinstance(rlayer, ConvResetLayer):
             fused_conv = fuse_conv_bn(rlayer.layer, rlayer.bn)
             net1.features[i].load_state_dict(fused_conv.state_dict())
-    net1.classifier.load_state_dict(net.classifier.state_dict())
+    for i, rlayer in enumerate(net.classifier):
+        if isinstance(rlayer, LinearResetLayer):
+            fused_conv = fuse_conv_bn(rlayer.layer, rlayer.bn)
+            net1.classifier[i].load_state_dict(fused_conv.state_dict())
     return net1
 
 
