@@ -192,7 +192,7 @@ def main():
     # Iterate through corresponding triples of (TrackLayer, TrackLayer, ResetLayer)
     # around conv layers in (model0, model1, model_a).
     corr_vec_it = iter(corr_vectors)
-    for track0, track1, reset_a in zip(wrap1.modules(), wrap2.modules(), wrap_a.modules()):
+    for track0, track1, matched, reset_a in zip(wrap1.modules(), wrap2.modules(),wrapMatched.modules(), wrap_a.modules()):
         # print(track0)
         # print(reset_a)
         if not isinstance(track0, TrackLayer):
@@ -206,7 +206,7 @@ def main():
         mu1, std1 = track1.get_stats()
         print(f'model 1: {mu0}, {std0}')
         print(f'model 2: {mu1}, {std1}')
-        print(f'model matched: {wrapMatched.get_stats()}')
+        print(f'model matched: {matched.get_stats()}')
         # set the goal neuronal statistics for the merged network
         goal_mean = (1 - alpha) * mu0 + alpha * mu1
         goal_std = (1 - alpha) * std0 + alpha * std1
