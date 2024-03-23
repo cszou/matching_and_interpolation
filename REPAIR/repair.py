@@ -62,13 +62,13 @@ class TrackLayer(nn.Module):
 class ConvTrackLayer(TrackLayer):
     def __init__(self, layer):
         super().__init__(layer)
-        self.bn = nn.BatchNorm2d(layer.out_channels)
+        self.bn = nn.BatchNorm2d(layer.out_features)
 
 
 class LinearTrackLayer(TrackLayer):
     def __init__(self, layer):
         super().__init__(layer)
-        self.bn = nn.BatchNorm1d(layer.out_channels)
+        self.bn = nn.BatchNorm1d(layer.out_features)
 
 
 class ResetLayer(nn.Module):
