@@ -228,9 +228,18 @@ def main():
     val_model_b = weight_interp.validate(val_loader, model_b, criterion)
     print(f'wrap a: {val_wrap_a}')
     print(f'model b: {val_model_b}')
-    torch.save(wrap_a, 'wrap_a')
-    torch.save(model_b, 'model_b')
-    torch.save(modelMatched, 'modelMatched')
+    # torch.save(wrap_a, 'wrap_a')
+    # torch.save(model_b, 'model_b')
+    # torch.save(modelMatched, 'modelMatched')
+    wrapb = make_tracked_net(model_b)
+    reset_bn_stats(wrapb)
+    for track0, layers in zip(wrap1.modules(), wrapb.modules()):
+        if not isinstance(layers, TrackLayer):
+            continue
+
+        # get neuronal statistics of original networks
+        print(f'model 1: {track0.get_stats()}')
+        print(f'model matched: {layers.get_stats()}')
 
 if __name__ == '__main__':
     main()
