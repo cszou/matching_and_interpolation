@@ -209,13 +209,13 @@ def main():
 
     reset_bn_stats(wrap1)
     reset_bn_stats(wrap2)
-    reset_bn_stats(wrapMatched)
+    # reset_bn_stats(wrapMatched)
     val_wrap1 = weight_interp.validate(val_loader, wrap1, criterion)
     val_wrap2 = weight_interp.validate(val_loader, wrap2, criterion)
-    val_modelMatched = weight_interp.validate(val_loader, wrapMatched, criterion)
+    # val_modelMatched = weight_interp.validate(val_loader, wrapMatched, criterion)
     print('wrap1:', val_wrap1)
     print('wrap2:', val_wrap2)
-    print('modelMatched:', val_modelMatched)
+    # print('modelMatched:', val_modelMatched)
 
     corr_vectors = torch.load('./corr.pth.tar')
     alpha = 0.5
@@ -227,11 +227,11 @@ def main():
     for track0, track1, matched, reset_a in zip(wrap1.modules(), wrap2.modules(),wrapMatched.modules(), wrap_a.modules()):
         # print(track0)
         # print(reset_a)
-        if not isinstance(track0, ConvTrackLayer):
+        if not isinstance(track0, TrackLayer):
             continue
-        assert (isinstance(track0, ConvTrackLayer)
-                and isinstance(track1, ConvTrackLayer)
-                and isinstance(reset_a, ConvResetLayer))
+        assert (isinstance(track0, TrackLayer)
+                and isinstance(track1, TrackLayer)
+                and isinstance(reset_a, ResetLayer))
 
         # get neuronal statistics of original networks
         mu0, std0 = track0.get_stats()
@@ -263,15 +263,15 @@ def main():
     # torch.save(wrap_a, 'wrap_a')
     # torch.save(model_b, 'model_b')
     # torch.save(modelMatched, 'modelMatched')
-    wrapb = make_tracked_net(model_b)
-    reset_bn_stats(wrapb)
-    for track0, layers in zip(wrap1.modules(), wrapb.modules()):
-        if not isinstance(layers, ConvTrackLayer):
-            continue
-
-        # get neuronal statistics of original networks
-        print(f'model 1: {track0.get_stats()}')
-        print(f'model matched: {layers.get_stats()}')
+    # wrapb = make_tracked_net(model_b)
+    # reset_bn_stats(wrapb)
+    # for track0, layers in zip(wrap1.modules(), wrapb.modules()):
+    #     if not isinstance(layers, ConvTrackLayer):
+    #         continue
+    #
+    #     # get neuronal statistics of original networks
+    #     print(f'model 1: {track0.get_stats()}')
+    #     print(f'model matched: {layers.get_stats()}')
 
 if __name__ == '__main__':
     main()
