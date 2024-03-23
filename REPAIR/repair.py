@@ -88,13 +88,13 @@ class ResetLayer(nn.Module):
         return self.bn(x1)
 
 
-class ConvResetLayer(nn.Module):
+class ConvResetLayer(ResetLayer):
     def __init__(self, layer):
         super().__init__(layer)
         self.bn = nn.BatchNorm2d(layer.out_channels)
 
 
-class LinearResetLayer(nn.Module):
+class LinearResetLayer(ResetLayer):
     def __init__(self, layer):
         super().__init__(layer)
         self.bn = nn.BatchNorm1d(layer.out_channels)
