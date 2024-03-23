@@ -50,7 +50,6 @@ class TrackLayer(nn.Module):
     def __init__(self, layer):
         super().__init__()
         self.layer = layer
-        self.bn = nn.BatchNorm2d(layer.out_channels)
 
     def get_stats(self):
         return self.bn.running_mean, self.bn.running_var.sqrt()
@@ -60,12 +59,22 @@ class TrackLayer(nn.Module):
         self.bn(x1)
         return x1
 
+class ConvTrackLayer(TrackLayer):
+    def __init__(self, layer):
+        super().__init__(layer)
+        self.bn = nn.BatchNorm2d(layer.out_channels)
+
+
+class LinearTrackLayer(TrackLayer):
+    def __init__(self, layer):
+        super().__init__(layer)
+        self.bn = nn.BatchNorm1d(layer.out_channels)
+
 
 class ResetLayer(nn.Module):
     def __init__(self, layer):
         super().__init__()
         self.layer = layer
-        self.bn = nn.BatchNorm2d(layer.out_channels)
 
     def set_stats(self, goal_mean, goal_std):
         self.bn.bias.data = goal_mean
@@ -79,13 +88,27 @@ class ResetLayer(nn.Module):
         return self.bn(x1)
 
 
+class ConvResetLayer(nn.Module):
+    def __init__(self, layer):
+        super().__init__(layer)
+        self.bn = nn.BatchNorm2d(layer.out_channels)
+
+
+class LinearResetLayer(nn.Module):
+    def __init__(self, layer):
+        super().__init__(layer)
+        self.bn = nn.BatchNorm1d(layer.out_channels)
+
+
 # adds TrackLayers around every conv layer
 def make_tracked_net(net):
     net1 = models.alexnet()
     net1.load_state_dict(net.state_dict())
     for i, layer in enumerate(net1.features):
         if isinstance(layer, nn.Conv2d):
-            net1.features[i] = TrackLayer(layer)
+            net1.features[i] = ConvTrackLayer(layer)
+        elif isinstance(layer, nn.Linear):
+            net1.features[i] = LinearTrackLayer(layer)
     return net1.cuda().eval()
 
 
@@ -95,7 +118,9 @@ def make_repaired_net(net):
     net1.load_state_dict(net.state_dict())
     for i, layer in enumerate(net1.features):
         if isinstance(layer, nn.Conv2d):
-            net1.features[i] = ResetLayer(layer)
+            net1.features[i] = ConvResetLayer(layer)
+        elif isinstance(layer, nn.Linear):
+            net1.features[i] = LinearResetLayer(layer)
     return net1.cuda().eval()
 
 
@@ -113,13 +138,20 @@ def reset_bn_stats(model):
 
 
 def fuse_conv_bn(conv, bn):
-    fused_conv = torch.nn.Conv2d(conv.in_channels,
-                                 conv.out_channels,
-                                 kernel_size=conv.kernel_size,
-                                 stride=conv.stride,
-                                 padding=conv.padding,
-                                 bias=True)
-
+    if isinstance(conv, nn.Conv2d):
+        fused_conv = torch.nn.Conv2d(conv.in_channels,
+                                     conv.out_channels,
+                                     kernel_size=conv.kernel_size,
+                                     stride=conv.stride,
+                                     padding=conv.padding,
+                                     bias=True)
+    elif isinstance(conv, nn.Conv1d):
+        fused_conv = torch.nn.Conv1d(conv.in_channels,
+                                     conv.out_channels,
+                                     kernel_size=conv.kernel_size,
+                                     stride=conv.stride,
+                                     padding=conv.padding,
+                                     bias=True)
     # set weights
     w_conv = conv.weight.clone()
     bn_std = (bn.eps + bn.running_var).sqrt()
@@ -136,7 +168,7 @@ def fuse_conv_bn(conv, bn):
 def fuse_tracked_net(net):
     net1 = models.alexnet()
     for i, rlayer in enumerate(net.features):
-        if isinstance(rlayer, ResetLayer):
+        if isinstance(rlayer, ConvResetLayer):
             fused_conv = fuse_conv_bn(rlayer.layer, rlayer.bn)
             net1.features[i].load_state_dict(fused_conv.state_dict())
     net1.classifier.load_state_dict(net.classifier.state_dict())
@@ -195,11 +227,11 @@ def main():
     for track0, track1, matched, reset_a in zip(wrap1.modules(), wrap2.modules(),wrapMatched.modules(), wrap_a.modules()):
         # print(track0)
         # print(reset_a)
-        if not isinstance(track0, TrackLayer):
+        if not isinstance(track0, ConvTrackLayer):
             continue
-        assert (isinstance(track0, TrackLayer)
-                and isinstance(track1, TrackLayer)
-                and isinstance(reset_a, ResetLayer))
+        assert (isinstance(track0, ConvTrackLayer)
+                and isinstance(track1, ConvTrackLayer)
+                and isinstance(reset_a, ConvResetLayer))
 
         # get neuronal statistics of original networks
         mu0, std0 = track0.get_stats()
@@ -234,7 +266,7 @@ def main():
     wrapb = make_tracked_net(model_b)
     reset_bn_stats(wrapb)
     for track0, layers in zip(wrap1.modules(), wrapb.modules()):
-        if not isinstance(layers, TrackLayer):
+        if not isinstance(layers, ConvTrackLayer):
             continue
 
         # get neuronal statistics of original networks
