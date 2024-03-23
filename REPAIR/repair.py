@@ -190,14 +190,14 @@ def main():
     criterion = CrossEntropyLoss()
 
 
-    val_model1 = weight_interp.validate(val_loader, m1, criterion)
-    val_model2 = weight_interp.validate(val_loader, m2, criterion)
-    val_wrap1 = weight_interp.validate(val_loader, wrap1, criterion)
-    val_wrap2 = weight_interp.validate(val_loader, wrap2, criterion)
-    print('model1:', val_model1)
-    print('model2:', val_model2)
-    print('wrap1:', val_wrap1)
-    print('wrap2:', val_wrap2)
+    # val_model1 = weight_interp.validate(val_loader, m1, criterion)
+    # val_model2 = weight_interp.validate(val_loader, m2, criterion)
+    # val_wrap1 = weight_interp.validate(val_loader, wrap1, criterion)
+    # val_wrap2 = weight_interp.validate(val_loader, wrap2, criterion)
+    # print('model1:', val_model1)
+    # print('model2:', val_model2)
+    # print('wrap1:', val_wrap1)
+    # print('wrap2:', val_wrap2)
     matchedPara = OrderedDict()
     for k in p1['state_dict'].keys():
         matchedPara[k] = 0.5 * p1['state_dict'][k] + 0.5 * p2['state_dict'][k]
