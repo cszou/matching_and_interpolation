@@ -130,7 +130,7 @@ def make_repaired_net(net):
 def reset_bn_stats(model):
     # resetting stats to baseline first as below is necessary for stability
     for m in model.modules():
-        if type(m) == nn.BatchNorm2d:
+        if type(m) == nn.BatchNorm2d or type(m) == nn.BatchNorm1d:
             m.momentum = None # use simple average
             m.reset_running_stats()
     model.train()
@@ -158,7 +158,7 @@ def fuse_conv_bn(conv, bn):
     w_conv = conv.weight.clone()
     bn_std = (bn.eps + bn.running_var).sqrt()
     gamma = bn.weight / bn_std
-    fused_conv.weight.data = (w_conv * gamma.reshape(-1, 1, 1, 1))
+    fused_conv.weight.data = w_conv * (gamma.reshape(-1, 1, 1, 1) if isinstance(conv, nn.Conv2d) else gamma.reshape(-1,1,1))
 
     # set bias
     beta = bn.bias + gamma * (-bn.running_mean + conv.bias)
