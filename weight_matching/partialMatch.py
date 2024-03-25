@@ -68,7 +68,7 @@ valM = weight_interp.validate(val_loader, modelMatched, criterion)
 
 
 val = []
-for j in range(0, 11):
+for j in range(0, 10):
     print(j)
     threshold = sorted(all_kts)[int(len(all_kts)*j/10)]
     PartialMatchedPara = OrderedDict()
