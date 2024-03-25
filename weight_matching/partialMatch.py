@@ -41,34 +41,45 @@ train_loader = torch.utils.data.DataLoader(
 
 
 all_kts = []
-kts = torch.load('../get_activations/kt2.pth.tar')
+kts = torch.load('./kt2.pth.tar')
 for v in kts.values():
     all_kts += v.tolist()
 
-threshold = sorted(all_kts)[int(len(all_kts)*0.2)]
-
-para1 = torch.load('../get_activations/m1.checkpoint.pth.tar')['state_dict']
-para2 = torch.load('../get_activations/m2.checkpoint.pth.tar')['state_dict']
+para1 = torch.load('./m1.checkpoint.pth.tar')['state_dict']
+para2 = torch.load('./m2.checkpoint.pth.tar')['state_dict']
 model1 = models.alexnet()
-model1.load_state_dict(para1['state_dict'])
+model1.load_state_dict(para1)
 model2 = models.alexnet()
-model2.load_state_dict(para2['state_dict'])
+model2.load_state_dict(para2)
 
 criterion = nn.CrossEntropyLoss()
 
 matchedPara = OrderedDict()
 for k in para1.keys():
-    print(k)
     matchedPara[k] = 0.5 * para1[k] + 0.5 * para2[k]
-    if k.split('.')[0] == 'features':
-        for i in range(para1[k].shape[0]):
-            if kts[k.split('.')[1]][i] < threshold:
-                matchedPara[k][i] = para1[k][i]
 modelMatched = models.alexnet()
 modelMatched.load_state_dict(matchedPara)
-
-
 val1 = weight_interp.validate(val_loader, model1, criterion)
 val2 = weight_interp.validate(val_loader, model2, criterion)
 valM = weight_interp.validate(val_loader, modelMatched, criterion)
-print(val1, val2, valM)
+
+
+val = []
+for i in range(1, 10):
+    print(i)
+    threshold = sorted(all_kts)[int(len(all_kts)*i/10)]
+    PartialMatchedPara = OrderedDict()
+    for k in para1.keys():
+        print(k)
+        PartialMatchedPara[k] = 0.5 * para1[k] + 0.5 * para2[k]
+        if k.split('.')[0] == 'features':
+            for i in range(para1[k].shape[0]):
+                if kts[k.split('.')[1]][i] < threshold:
+                    PartialMatchedPara[k][i] = para1[k][i]
+    PartialModelMatched = models.alexnet()
+    PartialModelMatched.load_state_dict(PartialMatchedPara)
+    valPartial = weight_interp.validate(val_loader, PartialModelMatched, criterion)
+    val.append(valPartial)
+    print(val1, val2, valM, valPartial)
+
+torch.save(val, 'val')
