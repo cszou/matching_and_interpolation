@@ -229,54 +229,28 @@ def main():
     # Iterate through corresponding triples of (TrackLayer, TrackLayer, ResetLayer)
     # around conv layers in (model0, model1, model_a).
     corr_vec_it = iter(corr_vectors)
-    for track0, track1, matched, reset_a in zip(wrap1.modules(), wrap2.modules(),wrapMatched.modules(), wrap_a.modules()):
-        # print(track0)
-        # print(reset_a)
-        if not isinstance(track0, TrackLayer):
-            continue
-        assert (isinstance(track0, TrackLayer)
-                and isinstance(track1, TrackLayer)
-                and isinstance(reset_a, ResetLayer))
+    torch.save(wrap1, 'wrap1')
+    torch.save(wrap2, 'wrap2')
+    torch.save(wrap_a, 'wrap_a')
 
-        # get neuronal statistics of original networks
-        mu0, std0 = track0.get_stats()
-        mu1, std1 = track1.get_stats()
-        print(f'model 1: {mu0}, {std0}')
-        print(f'model 2: {mu1}, {std1}')
-        # print(f'model matched: {matched.get_stats()}')
-        # set the goal neuronal statistics for the merged network
-        goal_mean = (1 - alpha) * mu0 + alpha * mu1
-        goal_std = (1 - alpha) * std0 + alpha * std1
 
-        corr_vec = next(corr_vec_it)
-        exp_mean = goal_mean
-        exp_std = ((1 - alpha) ** 2 * std0 ** 2 + alpha ** 2 * std1 ** 2 + 2 * alpha * (
-                    1 - alpha) * std0 * std1 * corr_vec) ** 0.5
-        goal_std_ratio = goal_std / exp_std
-        goal_mean_shift = goal_mean - goal_std_ratio * exp_mean
-
-        # Y = aX + b, where X has mean/var mu/sigma^2, and we want nu/tau^2,
-        # so we set a = tau/sigma and b = nu - (tau / sigma) mu
-
-        reset_a.set_stats(goal_mean_shift, goal_std_ratio)
-
-    model_b = fuse_tracked_net(wrap_a)
+    # model_b = fuse_tracked_net(wrap_a)
     val_wrap_a = weight_interp.validate(val_loader, wrap_a, criterion)
-    val_model_b = weight_interp.validate(val_loader, model_b, criterion)
+    # val_model_b = weight_interp.validate(val_loader, model_b, criterion)
     print(f'wrap a: {val_wrap_a}')
-    print(f'model b: {val_model_b}')
+    # print(f'model b: {val_model_b}')
     # torch.save(wrap_a, 'wrap_a')
     # torch.save(model_b, 'model_b')
     # torch.save(modelMatched, 'modelMatched')
-    wrapb = make_tracked_net(model_b)
-    reset_bn_stats(wrapb)
-    for track0, layers in zip(wrap1.modules(), wrapb.modules()):
-        if not isinstance(layers, TrackLayer):
-            continue
-
-        # get neuronal statistics of original networks
-        print(f'model 1: {track0.get_stats()}')
-        print(f'model matched: {layers.get_stats()}')
+    # wrapb = make_tracked_net(model_b)
+    # reset_bn_stats(wrapb)
+    # for track0, layers in zip(wrap1.modules(), wrapb.modules()):
+    #     if not isinstance(layers, TrackLayer):
+    #         continue
+    #
+    #     # get neuronal statistics of original networks
+    #     print(f'model 1: {track0.get_stats()}')
+    #     print(f'model matched: {layers.get_stats()}')
 
 if __name__ == '__main__':
     main()
