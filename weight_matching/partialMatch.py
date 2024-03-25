@@ -59,18 +59,20 @@ for k in para1.keys():
     matchedPara[k] = 0.5 * para1[k] + 0.5 * para2[k]
 modelMatched = models.alexnet()
 modelMatched.load_state_dict(matchedPara)
+print('model 1 validation')
 val1 = weight_interp.validate(val_loader, model1, criterion)
+print('model 2 validation')
 val2 = weight_interp.validate(val_loader, model2, criterion)
+print('total mix validation')
 valM = weight_interp.validate(val_loader, modelMatched, criterion)
 
 
 val = []
-for i in range(0, 11):
-    print(i)
-    threshold = sorted(all_kts)[int(len(all_kts)*i/10)]
+for j in range(0, 11):
+    print(j)
+    threshold = sorted(all_kts)[int(len(all_kts)*j/10)]
     PartialMatchedPara = OrderedDict()
     for k in para1.keys():
-        print(k)
         PartialMatchedPara[k] = 0.5 * para1[k] + 0.5 * para2[k]
         if k.split('.')[0] == 'features':
             for i in range(para1[k].shape[0]):
