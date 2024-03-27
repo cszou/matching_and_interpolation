@@ -76,7 +76,7 @@ for j in range(0, 10):
         PartialMatchedPara[k] = 0.5 * para1[k] + 0.5 * para2[k]
         if k.split('.')[0] == 'features':
             for i in range(para1[k].shape[0]):
-                if corrs[l][i] < threshold:
+                if corrs[l//2][i] < threshold:
                     PartialMatchedPara[k][i] = para1[k][i]
     PartialModelMatched = models.alexnet()
     PartialModelMatched.load_state_dict(PartialMatchedPara)
