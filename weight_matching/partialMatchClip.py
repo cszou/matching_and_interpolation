@@ -41,7 +41,7 @@ train_loader = torch.utils.data.DataLoader(
 
 
 all_clip = []
-clips = torch.load('./clip_d.pth.tar')
+clips = torch.load('./clip_d.pth.tar')['clip_d_score']
 for v in clips.values():
     all_clip += v.tolist()
 
@@ -76,7 +76,7 @@ for j in range(0, 10):
         PartialMatchedPara[k] = 0.5 * para1[k] + 0.5 * para2[k]
         if k.split('.')[0] == 'features':
             for i in range(para1[k].shape[0]):
-                if clips[f'features_{k.split('.')[1]}'][i] < threshold:
+                if clips['features_' + k.split('.')[1]][i] < threshold:
                     PartialMatchedPara[k][i] = para1[k][i]
     PartialModelMatched = models.alexnet()
     PartialModelMatched.load_state_dict(PartialMatchedPara)
