@@ -42,7 +42,7 @@ train_loader = torch.utils.data.DataLoader(
 
 all_corr = []
 corrs = torch.load('./corr.pth.tar')
-for v in corrs.values():
+for v in corrs:
     all_corr += v.tolist()
 
 para1 = torch.load('./m1.checkpoint.pth.tar')['state_dict']
